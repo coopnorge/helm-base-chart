@@ -62,3 +62,11 @@ serviceEntries: []
 #      - name: aaa
 #        number: kees
 #        protocol: aaa
+grpcTranscodings:
+  - name: test
+    port: 3000
+    protoBinFile: proto.bin
+    services:
+      - coop.test.v1.Test
+    workloadSelector:
+      piet: kees
