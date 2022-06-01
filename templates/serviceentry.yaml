@@ -1,0 +1,26 @@
+{{- range .Values.serviceEntries }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: {{ .name }}
+spec:
+  hosts:
+    {{- range .hosts }}
+    - {{ . }}
+    {{- end }}
+  location: {{ .location | default "MESH_EXTERNAL" }}
+  ports:
+  {{- if .ports }}
+  {{- range .ports }}
+    - name: {{ .name }}
+      number: {{ .number }}
+      protocol: {{ .protocol }}
+  {{- end }}
+  {{- else }}
+    - name: https
+      number: 443
+      protocol: HTTPS
+  {{- end }}
+  resolution: {{ .resolution | default "DNS" }}
+{{- end -}}
