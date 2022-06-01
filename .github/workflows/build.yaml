@@ -14,10 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Output message
-        run: echo This is a default job to trigger output but it fails
-      - name: Fail when not in template
-        if: ${{ github.repository != 'coopnorge/github-template-default' }}
-        run: exit 1
+        run: echo howdi
   supply-chain-security-validation:
     name: Supply Chain Security Validation
     uses: coopnorge/github-workflow-supply-chain-security-validation/.github/workflows/supply-chain-security-validation.yaml@main
