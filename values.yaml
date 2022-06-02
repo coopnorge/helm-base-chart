@@ -7,7 +7,6 @@ replicaCount: 1
 image:
   repository: nginx
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 nameOverride: ""
@@ -48,9 +47,9 @@ resources:
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 4
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
 
 serviceEntries: []
@@ -62,11 +61,34 @@ serviceEntries: []
 #      - name: aaa
 #        number: kees
 #        protocol: aaa
-grpcTranscodings:
-  - name: test
-    port: 3000
-    protoBinFile: proto.bin
-    services:
-      - coop.test.v1.Test
-    workloadSelector:
-      piet: kees
+grpcTranscodings: {}
+#  - name: test
+#    port: 3000
+#    protoBinFile: proto.bin
+#    services:
+#      - coop.test.v1.Test
+#    workloadSelector:
+#      piet: kees
+#
+
+virtualService:
+#  httpPaths:
+#    route:
+#      - destination:
+#          host: helloworld
+#          port:
+#            number: 3000
+#    rewrite:
+#      uri: "/"
+#    pathPrefixes:
+#      - /helloworld
+#      - /helloworld/
+  grpcPaths:
+    route:
+      - destination:
+          host: helloworld
+          port:
+            number: 3000
+    pathPrefixes:
+      - /coopnorge.helloworld.v1beta1.HelloWorldAPI
+
