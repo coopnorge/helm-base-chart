@@ -1,0 +1,48 @@
+{{- if .Values.virtualService }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  {{- with .Values.virtualService }}
+  gateways:
+    {{- if .grpcPaths }}
+    - istio-system/gateway-grpc
+    {{- end }}
+    {{- if .httpPaths }}
+    - istio-system/gateway-http
+    {{- end }}
+  http:
+    {{- with .grpcPaths }}
+    - match:
+        {{- range .pathPrefixes }}
+        - gateways:
+            - istio-system/gateway-grpc
+          uri:
+            prefix: {{ . }}
+        {{- end }}
+      {{- with .rewrite }}
+      rewrite:
+        {{- toYaml . | nindent 8}}
+      {{- end }}
+      route:
+        {{- toYaml .route | nindent 8}}
+    {{- end }}
+    {{- with .httpPaths }}
+    - match:
+        {{- range .pathPrefixes }}
+        - gateways:
+            - istio-system/gateway-http
+          uri:
+            prefix: {{ . }}
+        {{- end }}
+      {{- with .rewrite }}
+      rewrite:
+        {{- toYaml . | nindent 8}}
+      {{- end }}
+      route:
+        {{- toYaml .route | nindent 8}}
+    {{- end }}
+    {{- end }}
+{{- end }}
