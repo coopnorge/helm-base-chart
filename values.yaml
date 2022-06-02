@@ -83,12 +83,12 @@ virtualService:
 #    pathPrefixes:
 #      - /helloworld
 #      - /helloworld/
-  grpcPaths:
-    route:
-      - destination:
-          host: helloworld
-          port:
-            number: 3000
-    pathPrefixes:
-      - /coopnorge.helloworld.v1beta1.HelloWorldAPI
+#  grpcPaths:
+#    route:
+#      - destination:
+#          host: helloworld
+#          port:
+#            number: 3000
+#    pathPrefixes:
+#      - /coopnorge.helloworld.v1beta1.HelloWorldAPI
 
