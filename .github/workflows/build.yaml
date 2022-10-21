@@ -19,5 +19,5 @@ jobs:
         if: ${{ github.repository != 'coopnorge/github-template-default' }}
         run: exit 1
   supply-chain-security-validation:
-    name: Supply Chain Security Validation
+    name: Supply Chain
     uses: coopnorge/github-workflow-supply-chain-security-validation/.github/workflows/supply-chain-security-validation.yaml@main
