@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "coop-app-chart.name" . }}
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.scaling.autoScalingEnabled }}
+  replicas: {{ .Values.scaling.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "coop-app-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "coop-app-chart.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.name }}
+      securityContext:
+        {{- toYaml .Values.advanced.deployment.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.name }}
+          securityContext:
+            {{- toYaml .Values.advanced.deployment.securityContext | nindent 12 }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: Always
+          env: 
+            - name: DD_DOGSTATSD_URL
+              value: "unix:///var/run/datadog/dsd.socket"
+            - name: DD_TRACE_AGENT_URL
+              value: "/var/run/datadog/apm.socket"
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            {{- range $key, $value := .Values.environmentVariables }}
+            - name: {{ $key }}
+              {{- if contains "\n" $value }}
+              value: {{ $value | toJson }}
+              {{- else }}
+              value: "{{ $value }}"
+              {{- end }}
+            {{- end }}
+            {{- range $secretObject, $value := .Values.secrets }}
+            {{- range $secretKey, $_ := $value.secrets }}
+            - name: {{ $secretKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretObject }}
+                  key: {{ $secretKey }}
+            {{- end }}
+            {{- end }}
+            {{- range $configMap, $value := .Values.configMaps }}
+            {{- range $key, $_ := $value.data }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapRef:
+                  name: {{ $configMap }}
+                  key: {{ $key }}
+            {{- end }}
+            {{- end }}
+
+          ports:
+            - name: {{ include "coop-app-chart.portName" . }}
+              containerPort: {{ .Values.port }}
+              protocol: TCP
+          livenessProbe:
+            {{- if .Values.health.livenessProbe -}}
+            {{ .Values.health.livenessProbe | toYaml | nindent 12}}
+            {{- else if .Values.connectivity.gRPC.enabled }}
+            grpc:
+              port: {{ .Values.port }}
+            {{- else }} 
+            httpGet:
+              path: {{ .path | default "/" }}
+              port: {{ .port | default .Values.port }}
+            {{- end }}
+          readinessProbe:
+            {{- if .Values.health.readynessProbe -}}
+            {{ .Values.health.readinessProbe | toYaml | nindent 12}}
+            {{- else if .Values.connectivity.gRPC.enabled }}
+            grpc:
+              port: {{ .Values.port }}
+            {{- else }} 
+            httpGet:
+              path: {{ .path | default "/" }}
+              port: {{ .port | default .Values.port }}
+            {{- end }}
+          volumeMounts:
+            - name: dsdsocket
+              mountPath: /var/run/datadog
+              readOnly: true
+          resources:
+            limits:
+              memory: {{ .Values.resources.memory }}
+            requests:
+              memory: {{ .Values.resources.memory }}
+              cpu: {{ .Values.resources.cpu }}
+      {{- with .Values.advanced.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.advanced.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.advanced.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - hostPath:
+            path: /var/run/datadog/
+          name: dsdsocket

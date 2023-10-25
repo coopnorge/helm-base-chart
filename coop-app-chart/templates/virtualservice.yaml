@@ -1,0 +1,75 @@
+{{- if .Values.connectivity.http.enabled }} 
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-http
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.http.dns }}
+  gateways:
+    - istio-system/gateway-http
+  http:
+    - match:
+        - gateways:
+            - istio-system/gateway-http
+          uri:
+            prefix: {{ .Values.connectivity.http.path | default (list "/" .Values.name "/" | join "") }}
+      rewrite:
+        uri: {{ .Values.connectivity.http.rewrite | default "/"}}
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.port }}
+{{- end }}
+{{- if .Values.connectivity.gRPC.enabled }} 
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-grpc
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.gRPC.dns }}
+  gateways:
+    - istio-system/gateway-grpc
+    {{- if .Values.connectivity.gRPC.publishAsHTTP }}
+    - istio-system/gateway-http 
+    {{- end }}
+  http:
+    - match:
+        - gateways:
+            - istio-system/gateway-grpc
+          uri:
+            prefix: /{{ .Values.connectivity.gRPC.service }}
+        {{- range .Values.connectivity.gRPC.additionalServices }}
+        - gateways:
+            - istio-system/gateway-grpc
+          uri:
+            prefix: /{{ . }}
+        {{- end }}
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.port }}
+    {{- if .Values.connectivity.gRPC.publishAsHTTP }}
+    - match:
+        - gateways:
+          - istio-system/gateway-http
+          uri:
+            prefix: /{{ .Values.name }}
+          rewrite: 
+            uri: /
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.port }}
+    {{- end }}
+{{- end }}
