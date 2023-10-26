@@ -35,7 +35,7 @@ app.kubernetes.io/name: {{ include "coop-app-chart.name" . }}
 
 
 {{/*
-Portnameing
+Port-naming
 */}}
 {{- define "coop-app-chart.portName" -}}
 {{- if .Values.connectivity.gRPC.enabled -}}
