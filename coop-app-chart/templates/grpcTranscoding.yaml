@@ -1,4 +1,4 @@
-{{- if .Values.connectivity.gRPC.publishAsHTTP }}
+{{- if .Values.connectivity.httpToGRPC.enabled }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
@@ -30,10 +30,9 @@ spec:
               always_print_enums_as_ints: false
               always_print_primitive_fields: true
               preserve_proto_field_names: false
-            proto_descriptor_bin: {{ .Values.connectivity.gRPC.protoDescriptorBinValue }}
+            proto_descriptor_bin: {{ .Values.connectivity.httpTOGPRC.protoDescriptorBinValue }}
             services:
-              - {{ .Values.connectivity.gRPC.service }}
-              {{- range .Values.connectivity.gRPC.additionalServices }}
+              {{- range .Values.connectivity.httpToGRPC.services }}
               - {{ . }}
               {{- end }}
   workloadSelector:

@@ -27,12 +27,13 @@ app:
       enabled: false 
     gRPC:
       enabled: true
-      service: coopnorge.helloworld.v1.HelloWorldAPI
-      additionalServices:
+    httpToGRPC:
+      enabled: true
+      services:
+      - coopnorge.helloworld.v1.HelloWorldAPI
       - coopnorge.helloworld.v1beta1.HelloWorldAPI
-      publishAsHTTP: true # will create a http endpoint on api.coop.no/<app.name>
       protoDescriptorBinValue: some-base-64-encodedvalue
-    
+ 
     externalServices:
       hellworld:
         hosts:

@@ -61,12 +61,19 @@ connectivity:
       #   rewrite: / (default)
   gRPC:
     enabled: false
-    service: # grpc path for ex /coopnorge.helloworld.v1beta1.HelloWorldAPI
     dns: api.coop.no
-    publishAsHTTP: false # will create a http endpoint on api.coop.no/<app.name>
-    protoDescriptorBinValue: # base64 encoded value of the proto descriptor bin 
-    additionalServices: []
-    # - # a grpc services 
+    # pathMatchter: defaults to "/coopnorge.<app.name>."
+    # Sets on which prefix of a path use use for routing requests to this app.  
+    pathMatcher: 
+  
+  httpToGRPC:
+    # Note: This is suspictable for change.
+    enabled: false
+    dns: api.coop.no
+    # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
+    protoDescriptorBinValue:  
+    # services: list of services packaged in the proto descriptor
+    services: []  
 
   externalServices: {} #white list to services
   #  github:

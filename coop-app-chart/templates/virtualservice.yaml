@@ -25,6 +25,7 @@ spec:
           port:
             number: {{ .Values.port }}
 {{- end }}
+
 {{- if .Values.connectivity.gRPC.enabled }} 
 ---
 apiVersion: networking.istio.io/v1beta1
@@ -38,27 +39,33 @@ spec:
     - {{ .Values.connectivity.gRPC.dns }}
   gateways:
     - istio-system/gateway-grpc
-    {{- if .Values.connectivity.gRPC.publishAsHTTP }}
-    - istio-system/gateway-http 
-    {{- end }}
   http:
     - match:
         - gateways:
             - istio-system/gateway-grpc
           uri:
-            prefix: /{{ .Values.connectivity.gRPC.service }}
-        {{- range .Values.connectivity.gRPC.additionalServices }}
-        - gateways:
-            - istio-system/gateway-grpc
-          uri:
-            prefix: /{{ . }}
-        {{- end }}
+            prefix: {{ .Values.connectivity.gRPC.pathMatcher | default (list "/coopnorge." .Values.name "." | join "") }}
       route:
       - destination:
           host: {{ .Values.name }}
           port:
             number: {{ .Values.port }}
-    {{- if .Values.connectivity.gRPC.publishAsHTTP }}
+{{- end }}
+
+{{- if .Values.connectivity.httpToGRPC.enabled }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-grpc-transcoder
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.httpToGRPC.dns }}
+  gateways:
+    - istio-system/gateway-http 
+  http:
     - match:
         - gateways:
           - istio-system/gateway-http
@@ -71,5 +78,4 @@ spec:
           host: {{ .Values.name }}
           port:
             number: {{ .Values.port }}
-    {{- end }}
 {{- end }}
