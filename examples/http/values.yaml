@@ -3,8 +3,7 @@
 app:
 
 
-  name: policy-botasdkfasdlkfjadfjasdkjfdsklfjadsklfjadsklfjadslkfjasdlkfjadlkfjkl
-  
+  name: policy-bot  
   environment: production
   
   image: palantirtechnologies/policy-bot:1.31.0
