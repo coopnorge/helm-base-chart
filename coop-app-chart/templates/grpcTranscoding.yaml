@@ -30,7 +30,7 @@ spec:
               always_print_enums_as_ints: false
               always_print_primitive_fields: true
               preserve_proto_field_names: false
-            proto_descriptor_bin: {{ .Values.connectivity.httpTOGPRC.protoDescriptorBinValue }}
+            proto_descriptor_bin: {{ .Values.connectivity.httpToGRPC.protoDescriptorBinValue }}
             services:
               {{- range .Values.connectivity.httpToGRPC.services }}
               - {{ . }}

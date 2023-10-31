@@ -88,6 +88,12 @@ connectivity:
 
 advanced:
   deployment:
+    kubeScoreIgnore: 
+      - pod-probes
+      - pod-networkpolicy 
+      - deployment-has-poddisruptionbudget
+      - container-resources
+      - deployment-has-host-podantiaffinity
     podSecurityContext:       
       fsGroup: 65534    
      
@@ -95,9 +101,9 @@ advanced:
       capabilities:
         drop:
           - ALLL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 65534
-
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534    
 
  

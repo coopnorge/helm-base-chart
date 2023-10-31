@@ -4,7 +4,7 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ include "coop-app-chart.name" . }}
 spec:
-  minAvailabe: {{ sub (.Values.scaling.replicas | int) 1 }}
+  minAvailable: {{ sub (.Values.scaling.replicas | int) 1 }}
   selector:
     matchLabels:
     {{- include "coop-app-chart.selectorLabels" . | nindent 6 }}

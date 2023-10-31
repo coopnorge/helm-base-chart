@@ -33,7 +33,6 @@ Selector labels
 app.kubernetes.io/name: {{ include "coop-app-chart.name" . }}
 {{- end }}
 
-
 {{/*
 Port-naming
 */}}
