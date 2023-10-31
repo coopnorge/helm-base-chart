@@ -1,0 +1,109 @@
+name: 
+
+environment:
+
+image:
+port:
+
+environmentVariables: {}
+  #ENV_NAME: Value
+
+
+health: {}
+  #if .connectivity.gRPC.enabled it will use a grpc heathcheck
+  #path: / (default)
+  #livenessProbe: livenessprobe override, use native format
+  #readinessProbe: readynessprobe override, use native format
+    
+
+scaling:
+  replicas: 2 
+  autoScalingEnabled: true
+  maxReplicas: 4
+  scalingCpuPercentage: 80 
+  scalingMemoryPercentage: 80 
+
+resources:
+  memory: 64M
+  cpu: 200m
+
+configMaps: {}
+  #configMapName:
+  #  data:
+  #    keyname: value 
+  #    longvaluekey: |
+  #        some long value
+  #    mountAsEnvironment: false
+  #    mountAsVolume: false (not yet implemented)
+  #    mountVolumePath: (not yet implemented)
+
+secrets: {} # required external secret manager
+  #secretObjectName:
+  #  provider: gcp (where secrets are stored) 
+  #    secrets:
+  #      key-name: secret-id
+  #    mountAsEnvironment: false
+  #    mountAsVolume: false (not yet implemented)
+  #    mountVolumePath: (not yet implemented)
+
+
+connectivity:
+  http:
+    # do not enable if you just want to publish gRPC has http. Check 
+    # connectivity.gRPC.publishAsHTTP
+    enabled: false
+    dns: api.coop.no # should maybe default to app.coop.no
+    #path: # defaults to app.name 
+    rewrite: / 
+    additionalEndpoints: [] # not yet implemented
+      # - dns: 
+      #   path: app.name (default)
+      #   rewrite: / (default)
+  gRPC:
+    enabled: false
+    dns: api.coop.no
+    # pathMatchter: defaults to "/coopnorge.<app.name>."
+    # Sets on which prefix of a path use use for routing requests to this app.  
+    pathMatcher: 
+  
+  httpToGRPC:
+    # Note: This is suspictable for change.
+    enabled: false
+    dns: api.coop.no
+    # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
+    protoDescriptorBinValue:  
+    # services: list of services packaged in the proto descriptor
+    services: []  
+
+  externalServices: {} #white list to services
+  #  github:
+  #    hosts:
+  #        - github.com
+  #        - www.github.com 
+  #        - api.github.com
+  #      ports:
+  #        - name: https
+  #          number: 443
+  #          protocol: https
+
+advanced:
+  deployment:
+    kubeScoreIgnore: 
+      - pod-probes
+      - pod-networkpolicy 
+      - deployment-has-poddisruptionbudget
+      - container-resources
+      - deployment-has-host-podantiaffinity
+    podSecurityContext:       
+      fsGroup: 65534    
+     
+    securityContext:
+      capabilities:
+        drop:
+          - ALLL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534    
+
+ 

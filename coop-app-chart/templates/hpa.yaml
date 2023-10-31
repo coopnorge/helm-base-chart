@@ -1,0 +1,32 @@
+{{- if .Values.scaling.autoScalingEnabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "coop-app-chart.name" . }}
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "coop-app-chart.name" . }}
+  minReplicas: {{ .Values.scaling.replicas }}
+  maxReplicas: {{ .Values.scaling.maxReplicas }}
+  metrics:
+    {{- if .Values.scaling.scalingCpuPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: {{ .Values.scaling.scalingCpuPercentage }}
+          type: Utilization
+    {{- end }}
+    {{- if .Values.scaling.scalingMemoryPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          averageUtilization: {{ .Values.scaling.scalingMemoryPercentage }}
+          type: Utilization
+    {{- end }}
+{{- end }}

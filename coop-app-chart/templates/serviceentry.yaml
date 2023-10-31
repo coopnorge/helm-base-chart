@@ -1,0 +1,29 @@
+{{ $root := . }}
+{{- range $key, $values := .Values.connectivity.externalServices }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: {{ $key }}
+  labels:
+    {{- include "coop-app-chart.labels" $root | nindent 4 }}
+spec:
+  hosts:
+    {{- range $values.hosts }}
+    - {{ . }}
+    {{- end }}
+  location: {{ $values.location | default "MESH_EXTERNAL" }}
+  ports:
+  {{- if $values.ports }}
+  {{- range $values.ports }}
+    - name: {{ .name }}
+      number: {{ .number }}
+      protocol: {{ .protocol }}
+  {{- end }}
+  {{- else }}
+    - name: https
+      number: 443
+      protocol: HTTPS
+  {{- end }}
+  resolution: {{ $values.resolution | default "DNS" }}
+{{- end -}}

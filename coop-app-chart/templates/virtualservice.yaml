@@ -1,0 +1,81 @@
+{{- if .Values.connectivity.http.enabled }} 
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-http
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.http.dns }}
+  gateways:
+    - istio-system/gateway-http
+  http:
+    - match:
+        - gateways:
+            - istio-system/gateway-http
+          uri:
+            prefix: {{ .Values.connectivity.http.path | default (list "/" .Values.name "/" | join "") }}
+      rewrite:
+        uri: {{ .Values.connectivity.http.rewrite | default "/"}}
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.port }}
+{{- end }}
+
+{{- if .Values.connectivity.gRPC.enabled }} 
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-grpc
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.gRPC.dns }}
+  gateways:
+    - istio-system/gateway-grpc
+  http:
+    - match:
+        - gateways:
+            - istio-system/gateway-grpc
+          uri:
+            prefix: {{ .Values.connectivity.gRPC.pathMatcher | default (list "/coopnorge." .Values.name "." | join "") }}
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.port }}
+{{- end }}
+
+{{- if .Values.connectivity.httpToGRPC.enabled }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-grpc-transcoder
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.httpToGRPC.dns }}
+  gateways:
+    - istio-system/gateway-http 
+  http:
+    - match:
+        - gateways:
+          - istio-system/gateway-http
+          uri:
+            prefix: /{{ .Values.name }}
+          rewrite: 
+            uri: /
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.port }}
+{{- end }}

@@ -1,0 +1,104 @@
+---
+
+app:
+  name: helloworld
+  
+  environment: production
+  
+  image: path-to-repo/helloworld:v1.2.9999
+  port: 3000
+  
+  environmentVariables:
+    APS: coopnorge.helloworld.v1 coopnorge.helloworld.v1beta 
+  
+  secrets:  # required external secret manager
+    helloworld:
+      provider: gcp 
+      secrets:
+        TEST: testy
+      mountAsEnvironment: true
+ 
+  resources:
+    memory: 128M
+    cpu: 2
+  
+  connectivity:
+    http:
+      enabled: false 
+    gRPC:
+      enabled: true
+    httpToGRPC:
+      enabled: true
+      services:
+      - coopnorge.helloworld.v1.HelloWorldAPI
+      - coopnorge.helloworld.v1beta1.HelloWorldAPI
+      protoDescriptorBinValue: some-base-64-encodedvalue
+ 
+    externalServices:
+      hellworld:
+        hosts:
+          - google.com
+          - vg.no 
+          - coop.no
+        ports:
+          - name: https
+            number: 443
+            protocol: https
+ 
+http:
+
+
+  name: policy-bot
+  
+  environment: production
+  
+  image: palantirtechnologies/policy-bot:1.31.0
+  port: 8080
+  
+  environmentVariables:
+    POLICYBOT_PUBLIC_URL: https://api.coop.no/policy-bot 
+    GITHUB_APP_INTEGRATION_ID: "380317"
+    GITHUB_OAUTH_CLIENT_ID: Iv1.2140cb51e8edb928
+  
+  secrets:  # required external secret manager
+    policy-bot:
+      provider: gcp 
+      secrets:
+        GITHUB_APP_PRIVATE_KEY: GITHUB_APP_PRIVATE_KEY
+        GITHUB_APP_WEBHOOK_SECRET: GITHUB_APP_WEBHOOK_SECRET
+        GITHUB_OAUTH_CLIENT_SECRET: GITHUB_OAUTH_CLIENT_SECRET
+        POLICYBOT_SESSIONS_KEY: POLICYBOT_SESSIONS_KEY
+      mountAsEnvironment: false
+  
+  
+  health:
+    path: /policy-bot/
+  
+  scaling:
+    autoScalingEnabled: false 
+    replicas: 1 
+
+  resources:
+    memory: 128M
+    cpu: 2
+  
+  connectivity:
+    http:
+      enabled: true 
+      dns: api.coop.no # defaults to api.coop.name (should we introduce app.coop.no)
+      rewrite: /policy-bot/
+  
+    externalServices:
+      github:
+        hosts:
+          - github.com
+          - www.github.com 
+          - api.github.com
+        ports:
+          - name: https
+            number: 443
+            protocol: https
+  
+
+  
+  

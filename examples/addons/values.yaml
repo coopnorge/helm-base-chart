@@ -1,0 +1,57 @@
+---
+
+app:
+  name: helloworld
+  
+  environment: production
+  
+  image: path-to-repo/helloworld:v1.2.9999
+  port: 3000
+  
+  environmentVariables:
+    APS: coopnorge.helloworld.v1 coopnorge.helloworld.v1beta 
+  
+  secrets:  # required external secret manager
+    helloworld:
+      provider: gcp 
+      secrets:
+        TEST: testy
+      mountAsEnvironment: true
+  
+  
+  health:
+    readinessProbe:
+      grpc:
+        port: 3000
+    livenessProbe:
+      grpc:
+        port: 3000
+  
+  resources:
+    memory: 128M
+    cpu: 2
+  
+  connectivity:
+    http:
+      enabled: false 
+    gRPC:
+      enabled: true
+    httpToGRPC:
+      enabled: true
+      services:
+      - coopnorge.helloworld.v1.HelloWorldAPI
+      - coopnorge.helloworld.v1beta1.HelloWorldAPI
+      protoDescriptorBinValue: some-base-64-encodedvalue
+    
+    externalServices:
+      hellworld:
+        hosts:
+          - google.com
+          - vg.no 
+          - coop.no
+        ports:
+          - name: https
+            number: 443
+            protocol: https
+  
+  
