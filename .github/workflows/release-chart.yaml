@@ -23,6 +23,7 @@ jobs:
           path: gh-pages
 
       - name: Get release version
+        id: get_release_version
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           echo ::set-output name=release_tag::$TAG
@@ -34,7 +35,7 @@ jobs:
       - name: Generate helm chart and index
         run: |
           helm package helm-base-chart/charts/coop-app-chart
-          helm repo index --url https://github.com/coopnorge/helm-base-chart/releases/download/${{ steps.get_release_version.outputs.release_tag }}/ --merge gh-pages/index.yaml .
+          helm repo index --url https://github.com/coopnorge/helm-base-chart/releases/download/${{ steps.get_release_version.outputs.release_version }}/ --merge gh-pages/index.yaml .
 
       - name: Upload chart as release artifact
         uses: ncipollo/release-action@v1
@@ -53,5 +54,5 @@ jobs:
         working-directory: gh-pages
         run: |
           git add .
-          git commit -m "Update index with version ${{ steps.get_release_version.outputs.release_tag }}"
+          git commit -m "Update index with version ${{ steps.get_release_version.outputs.release_version }}"
           git push origin gh-pages
