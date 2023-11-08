@@ -1,4 +1,4 @@
-name: Release Charts
+name: Release chart
 
 on:
   release:
@@ -10,20 +10,47 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout the release tag
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          path: helm-base-chart
 
-      - name: Configure Git
+      - name: Checkout latest gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Get release version
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          TAG=${GITHUB_REF#refs/tags/}
+          echo ::set-output name=release_tag::$TAG
+          echo ::set-output name=release_version::${TAG#v}
 
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Generate helm chart and index
+        run: |
+          helm package helm-base-chart/charts/coop-app-chart
+          helm repo index --url https://github.com/coopnorge/helm-base-chart/releases/download/${{ steps.get_release_version.outputs.release_tag }}/ --merge gh-pages/index.yaml .
+
+      - name: Upload chart as release artifact
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.get_release_version.outputs.release_tag }}
+          artifacts: coop-app-chart-${{ steps.get_release_version.outputs.release_version }}.tgz
+          allowUpdates: true
+
+      - name: Configure git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Update index
+        working-directory: gh-pages
+        run: |
+          git add .
+          git commit -m "Update index with version ${{ steps.get_release_version.outputs.release_tag }}"
+          git push origin gh-pages
