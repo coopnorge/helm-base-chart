@@ -2,3 +2,5 @@
 /CODEOWNERS @coopnorge/security-guild
 
 .github/workflows/security-* @coopnorge/security-guild
+
+/charts/coop-app-chart/Chart.yaml @coopnorge/github-review-bots
