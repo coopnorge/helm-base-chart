@@ -44,6 +44,8 @@ jobs:
           tag: ${{ steps.get_release_version.outputs.release_tag }}
           artifacts: coop-app-chart-${{ steps.get_release_version.outputs.release_version }}.tgz
           allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
 
       - name: Configure git
         working-directory: gh-pages
