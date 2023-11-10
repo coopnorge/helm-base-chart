@@ -5,9 +5,7 @@ on:
     types: [ published ]
 
 jobs:
-  update-chart-version:
-    permissions:
-      contents: write
+  get-release-details:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,52 +16,32 @@ jobs:
         run: exit 0
 
       - name: Get release version
-        id: get_release_version
+        id: get-release-version
         run: |
           RELEASE_VERSION=${GITHUB_REF#refs/tags/}
           echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
           echo "branch_name=update-chart-version-to-$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
       - name: Compare version from release draft with version in Chart.yaml
-        id: compare_versions
+        id: compare-versions
         run: |
-          echo "versions_match=$(jq -n --arg release_version "${{ steps.get_release_version.outputs.release_version }}" --arg chart_version "$(yq eval '.version' charts/coop-app-chart/Chart.yaml)" '$release_version == $chart_version')" >> $GITHUB_OUTPUT
+          echo "versions_match=$(jq -n --arg release_version "${{ steps.get-release-version.outputs.release_version }}" --arg chart_version "$(yq eval '.version' charts/coop-app-chart/Chart.yaml)" '$release_version == $chart_version')" >> $GITHUB_OUTPUT
 
-      - name: Exit if versions in release draft and Chart.yaml match
-        if: steps.compare_versions.outputs.versions_match == 'true'
-        run: exit 0
-
-      - name: Configure git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Update chart version
-        if: steps.compare_versions.outputs.versions_match == 'false'
-        run: |
-          git checkout -b "${{ steps.get_release_version.outputs.branch_name }}"
-          yq eval -i '.version = "${{ steps.get_release_version.outputs.release_version }}"' charts/coop-app-chart/Chart.yaml
-          git add charts/coop-app-chart/Chart.yaml
-          git commit -m "Update chart version to ${{ steps.get_release_version.outputs.release_version }}"
-          # push the branch to GitHub
-          git push origin ${{ steps.get_release_version.outputs.branch_name }}
-
-      - name: Create PR
-        id: create_pr
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: Bump version of helm chart to ${{ steps.get_release_version.outputs.release_version }}
-          branch: ${{ steps.get_release_version.outputs.branch_name }}
-
-      - name: Enable PR auto-merge
-        if: steps.create_pr.outputs.pull-request-number != ''
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
-          merge-method: squash
-
-      - name: Approve Pull Request
-        uses: juliangruber/approve-pull-request-action@v2
-        with:
-          github-token: ${{ secrets.REVIEWBOT_GITHUB_TOKEN }}
-          number: ${{ steps.create_pr.outputs.pull-request-number }}
+  update-helm-chart-version:
+    needs:
+      - get-release-details
+    if: needs.get-release-details.steps.compare-versions.outputs.versions_match == 'false'
+    uses: coopnorge/engineering-github-actions/.github/workflows/update-infrastructure-repo.yaml@main
+    secrets:
+      write-back-app-pem: ${{ secrets.WRITEBACK_APP_PRIVATE_KEY_PEM }}
+      approve-pr-token: ${{ secrets.REVIEWBOT_GITHUB_TOKEN }}
+    with:
+      environment-matrix-json: >-
+        [{
+            "environment": "production",
+            "auto-merge": "true" ,
+            "auto-approve" : "true"
+        }]
+      source-github-repo: ${{ github.repository }}
+      update-script: |
+        yq eval -i '.version = "${{ needs.get-release-details.steps.get-release-version.outputs.release_version }}"' charts/coop-app-chart/Chart.yaml
