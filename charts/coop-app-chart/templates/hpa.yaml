@@ -13,6 +13,14 @@ spec:
   minReplicas: {{ .Values.scaling.replicas }}
   maxReplicas: {{ .Values.scaling.maxReplicas }}
   metrics:
+   {{- if .Values.scaling.scalingMemoryPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          averageUtilization: {{ .Values.scaling.scalingMemoryPercentage }}
+          type: Utilization
+    {{- end }}
     {{- if .Values.scaling.scalingCpuPercentage }}
     - type: Resource
       resource:
@@ -21,12 +29,5 @@ spec:
           averageUtilization: {{ .Values.scaling.scalingCpuPercentage }}
           type: Utilization
     {{- end }}
-    {{- if .Values.scaling.scalingMemoryPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          averageUtilization: {{ .Values.scaling.scalingMemoryPercentage }}
-          type: Utilization
-    {{- end }}
+ 
 {{- end }}
