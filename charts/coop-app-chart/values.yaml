@@ -94,6 +94,7 @@ advanced:
       - deployment-has-poddisruptionbudget
       - container-resources
       - deployment-has-host-podantiaffinity
+      - container-ephemeral-storage-request-and-limit
     podSecurityContext:       
       fsGroup: 65534    
      
