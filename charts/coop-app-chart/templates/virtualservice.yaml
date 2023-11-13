@@ -71,8 +71,8 @@ spec:
           - istio-system/gateway-http
           uri:
             prefix: /{{ .Values.name }}
-          rewrite: 
-            uri: /
+      rewrite: 
+        uri: /
       route:
       - destination:
           host: {{ .Values.name }}
