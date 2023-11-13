@@ -81,7 +81,8 @@ spec:
             {{- if .Values.health.livenessProbe -}}
             {{ .Values.health.livenessProbe | toYaml | nindent 12}}
             {{- else if .Values.connectivity.gRPC.enabled }}
-            grpc:
+            # istio 1.10.2 does not support grpc health, fallback to tcp for now
+            tcpSocket:
               port: {{ .Values.port }}
             {{- else }} 
             httpGet:
@@ -92,7 +93,8 @@ spec:
             {{- if .Values.health.readinessProbe -}}
             {{ .Values.health.readinessProbe | toYaml | nindent 12}}
             {{- else if .Values.connectivity.gRPC.enabled }}
-            grpc:
+            # istio 1.10.2 does not support grpc health, fallback to tcp for now
+            tcpSocket:
               port: {{ .Values.port }}
             {{- else }} 
             httpGet:
