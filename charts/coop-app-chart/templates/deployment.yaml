@@ -89,7 +89,7 @@ spec:
               port: {{ .port | default .Values.port }}
             {{- end }}
           readinessProbe:
-            {{- if .Values.health.readynessProbe -}}
+            {{- if .Values.health.readinessProbe -}}
             {{ .Values.health.readinessProbe | toYaml | nindent 12}}
             {{- else if .Values.connectivity.gRPC.enabled }}
             grpc:
