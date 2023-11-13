@@ -34,7 +34,7 @@ jobs:
 
       - name: Generate helm chart and index
         run: |
-          helm package main-repo/charts/coop-app-chart
+          helm package main-repo/charts/coop-app-chart --version ${{ steps.get_release_version.outputs.release_version }}
           helm repo index --url https://github.com/${{ github.repository }}/releases/download/${{ steps.get_release_version.outputs.release_tag }}/ --merge gh-pages/index.yaml .
           mv index.yaml gh-pages/index.yaml
 
