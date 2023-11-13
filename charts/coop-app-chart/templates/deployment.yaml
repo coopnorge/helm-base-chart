@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "coop-app-chart.name" . }}
   labels:
-    {{- include "coop-app-chart.labels" . | nindent 4 }}
+    {{- include "coop-app-chart.deploymentLabels" . | nindent 4 }}
   annotations:
     kube-score/ignore: {{ .Values.advanced.deployment.kubeScoreIgnore | join "," }}
 spec:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "coop-app-chart.labels" . | nindent 8 }}
+        {{- include "coop-app-chart.podLabels" . | nindent 8 }}
       annotations:
         proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     spec:

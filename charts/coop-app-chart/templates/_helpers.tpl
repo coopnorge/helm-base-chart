@@ -15,16 +15,35 @@ Create chart name and version as used by the chart label.:wrap()
 {{- printf "%s-%s" ( .Chart.Name | trunc (int (sub 63 (len .Chart.Version))) ) .Chart.Version | replace "+" "_" | trimSuffix "-" }}
 {{- end }}
 
-{{/*:wrap()
+{{/*:
 Common labels
 */}}
 {{- define "coop-app-chart.labels" -}}
+helm.sh/chart: {{ include "coop-app-chart.chart" . }}
+{{ include "coop-app-chart.selectorLabels" . }}
+{{- end }}
+
+{{/*:
+Pod labels
+*/}}
+{{- define "coop-app-chart.podLabels" -}}
+{{ include "coop-app-chart.selectorLabels" . }}
+tags.datadoghq.com/env: {{ .Values.environment }}
+tags.datadoghq.com/service: {{ .Values.name }}
+tags.datadhoghq.com/version: {{ last (splitList ":" .Values.image) }}
+{{- end }}
+
+{{/*:
+Deployment labels
+*/}}
+{{- define "coop-app-chart.deploymentLabels" -}}
 helm.sh/chart: {{ include "coop-app-chart.chart" . }}
 {{ include "coop-app-chart.selectorLabels" . }}
 tags.datadoghq.com/env: {{ .Values.environment }}
 tags.datadoghq.com/service: {{ .Values.name }}
 tags.datadhoghq.com/version: {{ last (splitList ":" .Values.image) }}
 {{- end }}
+
 
 {{/*
 Selector labels
