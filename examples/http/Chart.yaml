@@ -25,7 +25,7 @@ appVersion: "1.16.0"
 
 dependencies:
   - name: coop-app-chart
-    version: 0.1.0
-    repository: "file://../../coop-app-chart"
+    version: 0.0.0
+    repository: "file://../../charts/coop-app-chart"
     alias: app
 
