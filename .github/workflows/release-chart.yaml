@@ -10,18 +10,6 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the release tag
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: main-repo
-
-      - name: Checkout latest gh-pages
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
-
       - name: Get release version
         id: get_release_version
         run: |
@@ -29,33 +17,9 @@ jobs:
           echo "release_tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "release_version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-
-      - name: Generate helm chart and index
-        run: |
-          helm package main-repo/charts/coop-app-chart --version ${{ steps.get_release_version.outputs.release_version }}
-          helm repo index --url https://github.com/${{ github.repository }}/releases/download/${{ steps.get_release_version.outputs.release_tag }}/ --merge gh-pages/index.yaml .
-          mv index.yaml gh-pages/index.yaml
-
-      - name: Upload chart as release artifact
-        uses: ncipollo/release-action@v1
+      - name: Publish the release
+        uses: ./.github/workflows/release-chart-workflow.yaml
         with:
-          tag: ${{ steps.get_release_version.outputs.release_tag }}
-          artifacts: coop-app-chart-${{ steps.get_release_version.outputs.release_version }}.tgz
-          allowUpdates: true
-          omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
-
-      - name: Configure git
-        working-directory: gh-pages
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Update index file in GitHub pages
-        working-directory: gh-pages
-        run: |
-          git add .
-          git commit -m "Update index with version ${{ steps.get_release_version.outputs.release_version }}"
-          git push origin gh-pages
+          repository: ${{ github.repository }}
+          release-tag: ${{ steps.get_release_version.outputs.release_tag }}
+          release-version: ${{ steps.get_release_version.outputs.release_version }}

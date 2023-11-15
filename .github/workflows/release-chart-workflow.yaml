@@ -1,0 +1,74 @@
+name: Release chart workflow
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+        description: >-
+          Repository that contains the chart to be released. This is the 
+          repository that is checked out and used to generate the chart and 
+          index.
+      release-tag:
+        required: true
+        type: string
+        description: >-
+          Release tag that is used to create the release. This is the tag that 
+          is used to identify the release where the artifact is uploaded to.
+      release-version:
+        required: true
+        type: string
+        description: >-
+          Release version that is used to create the release. This is the 
+          version that is used in the helm chart, the index and the filename.
+
+jobs:
+  publish-chart-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the release tag
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          fetch-depth: 0
+          path: main-repo
+
+      - name: Checkout latest gh-pages
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Generate helm chart and index
+        run: |
+          helm package main-repo/charts/coop-app-chart --version ${{ inputs.release-version }}
+          helm repo index --url https://github.com/${{ inputs.repository }}/releases/download/${{ inputs.release-tag }}/ --merge gh-pages/index.yaml .
+          mv index.yaml gh-pages/index.yaml
+
+      - name: Upload chart as release artifact
+        uses: ncipollo/release-action@v1
+        with:
+          repo: ${{ inputs.repository }}
+          tag: ${{ inputs.release-tag }}
+          artifacts: coop-app-chart-${{ inputs.release-version }}.tgz
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+
+      - name: Configure git
+        working-directory: gh-pages
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Update index file in GitHub pages
+        working-directory: gh-pages
+        run: |
+          git add .
+          git commit -m "Update index with version ${{ inputs.release-version }}"
+          git push origin gh-pages
