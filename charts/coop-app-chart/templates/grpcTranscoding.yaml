@@ -4,7 +4,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: {{ .Values.name }}-grpc-transcoder
-  lables:
+  labels:
     {{- include "coop-app-chart.labels" . | nindent 4 }}
 spec:
   configPatches:
