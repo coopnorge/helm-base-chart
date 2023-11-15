@@ -1,0 +1,31 @@
+---
+name: Update Helm Charts that use coop-app-chart
+on:
+  workflow_call:
+    inputs:
+      chart-dir:
+        required: true
+        type: string
+        description: |
+          Directory of the helm chart. Should contain a Chart.yaml with this dependency
+
+jobs:
+  update-coop-app-chart:
+    name: Update Coop App Chart Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Update Chart version
+        run: |
+          v=${{steps.dependabot-metadata.outputs.new-version}} yq -i '(.dependencies[]|select(.name="coop-app-chart").version ) = strenv(v)' Chart.yaml
+        working-directory: ${{ input.chart-dir }}
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update helm chart dependency coop-app-chart to ${{steps.dependabot-metadata.outputs.new-version}}
+     
+
