@@ -12,7 +12,7 @@ Expand the name of the chart.
 Create chart name and version as used by the chart label.:wrap()
 */}}
 {{- define "coop-app-chart.chart" -}}
-{{- printf "%s-%s" ( .Chart.Name | trunc (int (sub 63 (len .Chart.Version))) ) .Chart.Version | replace "+" "_" | trimSuffix "-" }}
+{{- printf "coop-app-chart-%s" .Chart.Version }}
 {{- end }}
 
 {{/*:
