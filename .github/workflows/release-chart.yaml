@@ -25,9 +25,9 @@ jobs:
       - name: Get release version
         id: get_release_version
         run: |
-          TAG=${GITHUB_REF#refs/tags/}
-          echo "release_tag=$TAG" >> $GITHUB_OUTPUT
-          echo "release_version=${TAG#v}" >> $GITHUB_OUTPUT
+          TAG="${{ github.event.release.tag_name }}"
+          echo "release_tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "release_version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Install Helm
         uses: azure/setup-helm@v3
