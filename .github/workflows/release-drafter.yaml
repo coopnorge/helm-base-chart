@@ -24,9 +24,10 @@ jobs:
   release-alpha-version:
     permissions:
       contents: write
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/release-chart-workflow.yaml
     needs: release-draft
     with:
       repository: ${{ github.repository }}
       release-tag: ${{ needs.release-draft.outputs.id }}
-      release-version: ${{ needs.release-draft.outputs.release_version }}
+      release-version: ${{ needs.release-draft.outputs.release_version }}-alpha.${{ github.event.pull_request.number }}.${{ github.run_number }}
