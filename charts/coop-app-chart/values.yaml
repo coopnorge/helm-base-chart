@@ -1,17 +1,17 @@
-name: 
+name: # the name of the service 
 
-environment:
+environment: # environment to which you deploy for ex production or staging
 
-image:
-port:
+image: # full image url of your image
+port: # the port on which the service is going to run
 
 environmentVariables: {}
   #ENV_NAME: Value
 
 
 health: {}
-  #if .connectivity.gRPC.enabled it will use a grpc heathcheck
-  #path: / (default)
+  #if .connectivity.gRPC.enabled it will use a tcpSocket as health check. Will be moved to native gRPC healthcheck when available.
+  #path: / # defaults to '/' if http is enabled
   #livenessProbe: livenessprobe override, use native format
   #readinessProbe: readynessprobe override, use native format
     
@@ -52,8 +52,8 @@ connectivity:
     # do not enable if you just want to publish gRPC has http. Check 
     # connectivity.gRPC.publishAsHTTP
     enabled: false
-    dns: api.coop.no # should maybe default to app.coop.no
-    #path: # defaults to app.name 
+    dns: api.coop.no 
+    #path: # defaults to name (or app.name in case this chart is used as dependency) 
     rewrite: / 
     additionalEndpoints: [] # not yet implemented
       # - dns: 
@@ -62,19 +62,9 @@ connectivity:
   gRPC:
     enabled: false
     dns: api.coop.no
-    # pathMatchter: defaults to "/coopnorge.<app.name>."
     # Sets on which prefix of a path use use for routing requests to this app.  
-    pathMatcher: 
-  
-  httpToGRPC:
-    # Note: This is suspictable for change.
-    enabled: false
-    dns: api.coop.no
-    # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
-    protoDescriptorBinValue:  
-    # services: list of services packaged in the proto descriptor
-    services: []  
-
+    # pathMatchter: defaults to "/coopnorge.<name>."
+ 
   externalServices: {} #white list to services
   #  github:
   #    hosts:
@@ -86,6 +76,19 @@ connectivity:
   #          number: 443
   #          protocol: https
 
+ 
+  httpToGRPC:
+    # !! Note: This is susceptible to change.
+    enabled: false
+    dns: api.coop.no
+    # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
+    protoDescriptorBinValue:  
+    # services: list of gRPC services packaged in the proto descriptor
+    services: []  
+
+# advanced configuration 
+# This exposes some configuration options which an user 
+# generaly should not change. 
 advanced:
   deployment:
     kubeScoreIgnore: 
