@@ -86,7 +86,9 @@ connectivity:
     # services: list of gRPC services packaged in the proto descriptor
     services: []  
 
-# not intended to be touched.
+# advanced configuration 
+# This exposes some configuration options which an user 
+# generaly should not change. 
 advanced:
   deployment:
     kubeScoreIgnore: 
