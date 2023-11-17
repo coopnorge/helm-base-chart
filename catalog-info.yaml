@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: coop-app-chart
+  title: Coop App Helm Chart
+  description: |
+    A Reusable Helm chart for deployments to the API-Platform. The chart can be 
+    used for both HTTP and gRPC deployments.
+  annotations:
+    github.com/project-slug: coopnorge/helm-base-chart
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: library
+  lifecycle: experimemtal
+  owner: cloud-platform
+
