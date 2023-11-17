@@ -2,7 +2,7 @@ name: # the name of the service
 
 environment: # environment to which you deploy for ex production or staging
 
-image: # full image url of you imag3
+image: # full image url of your image
 port: # the port on which the service is going to run
 
 environmentVariables: {}
@@ -11,7 +11,7 @@ environmentVariables: {}
 
 health: {}
   #if .connectivity.gRPC.enabled it will use a tcpSocket as health check. Will be moved to native gRPC healthcheck when available.
-  #path: / defaults to / if http is enabled
+  #path: / # defaults to '/' if http is enabled
   #livenessProbe: livenessprobe override, use native format
   #readinessProbe: readynessprobe override, use native format
     
@@ -78,12 +78,12 @@ connectivity:
 
  
   httpToGRPC:
-    # !!Note: This is suspictable for change.
+    # !! Note: This is susceptible to change.
     enabled: false
     dns: api.coop.no
     # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
     protoDescriptorBinValue:  
-    # services: list of gprc services packaged in the proto descriptor
+    # services: list of gRPC services packaged in the proto descriptor
     services: []  
 
 # not intended to be touched.

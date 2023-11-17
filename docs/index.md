@@ -6,7 +6,7 @@ used for both HTTP and gRPC deployments.
 As of version 0.2.7 it provides
 
 * Deployment with best practices and Datadog universal tagging
-* Service and connectivity trough HTTP and gRPC
+* Service and connectivity through HTTP and gRPC
 * Setup autoscaling
 * Secret injection (if you setup the namespace for it)
 * HTTP to gRPC transcoding
