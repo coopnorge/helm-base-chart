@@ -20,3 +20,13 @@ jobs:
       pull-requests: write
       contents: write
     uses: coopnorge/github-workflow-release-drafter/.github/workflows/release-drafter.yaml@v0.3.1
+
+  release-alpha-version:
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release-chart-workflow.yaml
+    needs: release-draft
+    with:
+      repository: ${{ github.repository }}
+      release-tag: ${{ needs.release-draft.outputs.id }}
+      release-version: ${{ needs.release-draft.outputs.release_version }}
