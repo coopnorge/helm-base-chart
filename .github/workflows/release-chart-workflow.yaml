@@ -16,11 +16,11 @@ on:
         description: >-
           Release tag that is used to create the release. This is the tag that 
           is used to identify the release where the artifact is uploaded to.
-      release-name:
+      release-version:
         required: true
         type: string
         description: >-
-          Release name that is used to create the release. This is used as the
+          Release version that is used to create the release. This is used as the
           version in the helm chart, the index and the filename.
     secrets:
       github-token:
@@ -53,13 +53,13 @@ jobs:
 
       - name: Generate helm chart
         run: |
-          helm package main-repo/charts/coop-app-chart --version ${{ inputs.release-name }}
+          helm package main-repo/charts/coop-app-chart --version ${{ inputs.release-version }}
 
       - name: Upload chart as release artifact
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ inputs.release-tag }}
-          artifacts: coop-app-chart-${{ inputs.release-name }}.tgz
+          artifacts: coop-app-chart-${{ inputs.release-version }}.tgz
           allowUpdates: true
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true
@@ -68,17 +68,23 @@ jobs:
 
       - name: Update helm chart index
         run: |
+          escape_special_chars() {
+              echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
+          }
+
           # Generate URL for the current release
           helm repo index --url https://github.com/${{ inputs.repository }}/releases/download/${{ inputs.release-tag }}/ --merge gh-pages/index.yaml .
           mv index.yaml gh-pages/index.yaml
 
           # Fix URLs for previous assets in the release
-          RELEASE_ASSET_NAMES=$(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[].name')
-          RELEASE_ASSET_URLS=$(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[].url')
+          RELEASE_ASSET_NAMES=$(escape_special_chars $(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[].name'))
+          RELEASE_ASSET_URLS=$(escape_special_chars $(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[].url'))
           # search index.yaml for all instances of https://.*/download/.*/RELEASE_ASSET_NAME and replace with RELEASE_ASSET_URL
-          for i in $(seq 0 $((${#RELEASE_ASSET_NAMES[@]}-1))); do
-              sed -i "s|https://.*/download/.*/${RELEASE_ASSET_NAMES[$i]}|${RELEASE_ASSET_URLS[$i]}|g" gh-pages/index.yaml
-          done
+          if [[ -n "${RELEASE_ASSET_NAMES// /}" ]]; then
+            for i in $(seq 0 $((${#RELEASE_ASSET_NAMES[@]}-1))); do
+                sed -i "s|-.*${RELEASE_ASSET_NAMES[$i]}|${RELEASE_ASSET_URLS[$i]}|g" gh-pages/index.yaml
+            done
+          fi
 
       - name: Configure git
         working-directory: gh-pages
@@ -90,5 +96,5 @@ jobs:
         working-directory: gh-pages
         run: |
           git add .
-          git commit -m "Update index with version ${{ inputs.release-name }}"
+          git commit -m "Update index with version ${{ inputs.release-version }}"
           git push origin gh-pages
