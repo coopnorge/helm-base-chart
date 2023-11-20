@@ -1,124 +1,134 @@
 apiVersion: v1
 entries:
-  coop-app-chart:
-  - apiVersion: v2
+  coop
+  
     appVersion: 1.16.0
-    created: "2023-11-20T15:44:09.333388914Z"
+    created: "2023
+    description: A Helm chart for Kubernetes
+    digest: dfdcdc1440b603ccb3d6af0a4c27dfc0ad8620bc67f8322b0664e024d0950f36
+    name: coop
+    type: application
+    urls:
+    
+    version: v0.3.0
+  
+    appVersion: 1.16.0
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 41b36441b7b19888d5162d269d8f9514d9441270451161cbd7d7afccdd81e743
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-v0.3.0-alpha.37.87.tgz
-    version: v0.3.0-alpha.37.87
-  - apiVersion: v2
+    
+    version: v0.3.0
+  
     appVersion: 1.16.0
-    created: "2023-11-20T15:40:21.248831605Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 334bf9e6cfba898396833e081abe87fb7cbb6444c9ae633109d91c26475ca0be
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-v0.3.0-alpha.37.86.tgz
-    version: v0.3.0-alpha.37.86
-  - apiVersion: v2
+    
+    version: v0.3.0
+  
     appVersion: 1.16.0
-    created: "2023-11-17T10:43:41.419098036Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: ad6229454cc874eea2bc7b44ae43566a0cc93e8ec43b8dd9be46859e89177166
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.2.7.tgz
+    
     version: 0.2.7
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-13T15:29:38.01783974Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: bb7d85b773891e802b2bf96a3bb6245965cf1598e0701c3bd0b8c6640eff7e6a
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.2.5.tgz
+    
     version: 0.2.5
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-13T14:16:04.814834055Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 79ce1208fa0c758d6adcdebce7eb50247dddb764242d95e91de6f3b41ad22a71
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.2.4.tgz
+    
     version: 0.2.4
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-13T12:43:34.723651501Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 470d04b0fdc2323e981253e61635f5ee62c31fe8ae1a0f8e06634d35dcbf623b
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.2.3.tgz
+    
     version: 0.2.3
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-13T11:03:23.118069748Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 8d3eeea518cbd74ea311cdd75fde131e904a9fea18b4f6ea44b8e975c0a96828
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.1.6.tgz
+    
     version: 0.1.6
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-09T11:17:46.268509041Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 9b0e316f46d44fc796639d6052b0eb997475c504244a273e23783c9ffa48fc59
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.1.4.tgz
+    
     version: 0.1.4
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-09T10:57:09.823849+01:00"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 0888dd0895e6579f152ee883727dba5b8986669a81868736e64c7f40dc28336d
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.1.3.tgz
+    
     version: 0.1.3
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-09T10:57:09.823501+01:00"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 1b1bbb9a82c32a6885c10db8ec9559d24d06f753d1b0afc295a7ebca42bc85b0
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.1.2.tgz
+    
     version: 0.1.2
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-09T10:57:09.824203+01:00"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 872837a009d0e3d470c324454e6da90c53779040abd1aaf501c45c9d9f9898b7
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.1.1.tgz
+    
     version: 0.1.1
-  - apiVersion: v2
+  
     appVersion: 1.16.0
-    created: "2023-11-08T13:32:47.664693357Z"
+    created: "2023
     description: A Helm chart for Kubernetes
     digest: 4b1fa2e31d538ebcea175c9983483c0a4e110fd9c4b226bc5b0f73de7f4b2bb5
-    name: coop-app-chart
+    name: coop
     type: application
     urls:
-    - coop-app-chart-0.1.0.tgz
+    
     version: 0.1.0
-generated: "2023-11-20T15:44:09.332791977Z"
+generated: "2023
