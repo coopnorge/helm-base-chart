@@ -20,6 +20,8 @@ jobs:
       pull-requests: write
       contents: write
     uses: coopnorge/github-workflow-release-drafter/.github/workflows/release-drafter.yaml@v0.3.1
+    with:
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   release-alpha-version:
     permissions:
@@ -31,3 +33,5 @@ jobs:
       repository: ${{ github.repository }}
       release-tag: ${{ needs.release-draft.outputs.id }}
       release-version: ${{ needs.release-draft.outputs.release_version }}-alpha.${{ github.event.pull_request.number }}.${{ github.run_number }}
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}

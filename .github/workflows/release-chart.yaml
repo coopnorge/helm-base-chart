@@ -5,10 +5,11 @@ on:
     types: [released]
 
 jobs:
-  release:
-    permissions:
-      contents: write
+  prepare_release:
     runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.get_release_version.outputs.release_tag }}
+      release_version: ${{ steps.get_release_version.outputs.release_version }}
     steps:
       - name: Get release version
         id: get_release_version
@@ -17,9 +18,14 @@ jobs:
           echo "release_tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "release_version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Publish the release
-        uses: ./.github/workflows/release-chart-workflow.yaml
-        with:
-          repository: ${{ github.repository }}
-          release-tag: ${{ steps.get_release_version.outputs.release_tag }}
-          release-version: ${{ steps.get_release_version.outputs.release_version }}
+  publish_release:
+    permissions:
+      contents: write
+    needs: prepare_release
+    uses: ./.github/workflows/release-chart-workflow.yaml
+    with:
+      repository: ${{ github.repository }}
+      release-tag: ${{ needs.prepare_release.outputs.release-tag }}
+      release-version: ${{ needs.prepare_release.outputs.release-version }}
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
