@@ -28,14 +28,17 @@ jobs:
     outputs:
       tag_name: ${{ steps.get-version.outputs.tag_name }}
       version: ${{ steps.get-version.outputs.version }}
+      release_url: ${{ steps.get-version.outputs.html_url }}
     steps:
       - id: get-version
         run: |
-          RELEASE_VERSION=${{ needs.release-draft.outputs.name }}
+          RELEASE_VERSION=${{ needs.release-draft.outputs.name }}-alpha.${{ github.event.pull_request.number }}.${{ github.run_number }}
           RELEASE_VERSION=${RELEASE_VERSION#v}
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
           echo "tag_name=${{ needs.release-draft.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          
+          echo "release_url=${{ needs.release-draft.outputs.html_url }}" >> "$GITHUB_OUTPUT"
 
   release-alpha-version:
     permissions:
@@ -46,8 +49,25 @@ jobs:
     with:
       repository: ${{ github.repository }}
       release-tag: ${{ needs.process-release-drafter-output.outputs.tag_name }}
-      release-version: ${{ needs.process-release-drafter-output.outputs.version }}-alpha.${{ github.event.pull_request.number }}.${{ github.run_number }}
+      release-version: ${{ needs.process-release-drafter-output.outputs.version }}
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  # TODO: PR comment with details about the release
+  comment-pr:
+    permissions:
+      pull-requests: write
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: [release-alpha-version, process-release-drafter-output]
+    steps:
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ### 🚀 Alpha Version Published
+
+            **Helm Version:** [${{ needs.process-release-drafter-output.outputs.version }}](${{ needs.process-release-drafter-output.outputs.release_url }})
+
+            **Tag:** `${{ needs.process-release-drafter-output.outputs.tag_name }}`
+
+            **Commit ID:** `${{ github.sha }}`
