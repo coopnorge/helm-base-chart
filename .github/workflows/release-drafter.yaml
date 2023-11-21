@@ -19,7 +19,7 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
-    uses: coopnorge/github-workflow-release-drafter/.github/workflows/release-drafter.yaml@v0.3.1
+    uses: coopnorge/github-workflow-release-drafter/.github/workflows/release-drafter.yaml@v0.3.2
 
   process-release-output:
     runs-on: ubuntu-latest
