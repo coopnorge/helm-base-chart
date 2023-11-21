@@ -22,6 +22,12 @@ on:
         description: >-
           Release version that is used to create the release. This is used as the
           version in the helm chart, the index and the filename.
+      chart-path:
+        required: true
+        type: string
+        description: >-
+          Path to the helm chart that is to be released. The path must be relative
+          to the repository root.
     secrets:
       github-token:
         required: true
@@ -62,14 +68,21 @@ jobs:
 
       - name: Generate helm chart
         run: |
-          helm package main-repo/charts/coop-app-chart --version ${{ inputs.release-version }}
+          helm package main-repo/${{ inputs.chart-path }} --version ${{ inputs.release-version }}
+
+      - name: Get helm chart filename
+        id: get-chart-filename
+        run: |
+          CHART_PATH=${{ inputs.chart-path }}
+          CHART_FILENAME=$(basename $CHART_PATH)-${{ inputs.release-version }}.tgz
+          echo "chart-filename=$CHART_FILENAME" >> "$GITHUB_OUTPUT"
 
       - name: Upload chart as release artifact
         uses: ncipollo/release-action@v1
         id: upload-chart
         with:
           tag: ${{ inputs.release-tag }}
-          artifacts: coop-app-chart-${{ inputs.release-version }}.tgz
+          artifacts: ${{ steps.get-chart-filename.outputs.chart-filename }}
           allowUpdates: true
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true

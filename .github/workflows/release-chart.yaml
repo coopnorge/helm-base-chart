@@ -27,5 +27,6 @@ jobs:
       repository: ${{ github.repository }}
       release-tag: ${{ needs.prepare_release.outputs.release-tag }}
       release-version: ${{ needs.prepare_release.outputs.release-version }}
+      chart-path: charts/coop-app-chart
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
