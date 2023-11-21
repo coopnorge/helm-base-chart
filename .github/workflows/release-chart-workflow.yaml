@@ -32,7 +32,7 @@ jobs:
   publish-chart-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the release tag
+      - name: Checkout the release
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
@@ -50,6 +50,8 @@ jobs:
 
       - name: Install Helm
         uses: azure/setup-helm@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
 
       - name: Generate helm chart
         run: |

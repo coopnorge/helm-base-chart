@@ -21,7 +21,7 @@ jobs:
       contents: write
     uses: coopnorge/github-workflow-release-drafter/.github/workflows/release-drafter.yaml@v0.3.2
 
-  process-release-output:
+  process-release-drafter-output:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     needs: release-draft
@@ -33,20 +33,21 @@ jobs:
         run: |
           RELEASE_VERSION=${{ needs.release-draft.outputs.name }}
           RELEASE_VERSION=${RELEASE_VERSION#v}
-          echo "version=$RELEASE_VERSION" >> "$GITHUB_ENV"
-          
-          TAG_NAME=${{ needs.release-draft.outputs.tag_name }}
-          echo "tag_name=$TAG_NAME" >> "$GITHUB_ENV"
+          echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+
+          echo "tag_name=${{ needs.release-draft.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
 
   release-alpha-version:
     permissions:
       contents: write
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/release-chart-workflow.yaml
-    needs: process-release-output
+    needs: process-release-drafter-output
     with:
       repository: ${{ github.repository }}
-      release-tag: ${{ needs.process-release-output.outputs.tag_name }}
-      release-version: ${{ needs.process-release-output.outputs.version }}-alpha.${{ github.event.pull_request.number }}.${{ github.run_number }}
+      release-tag: ${{ needs.process-release-drafter-output.outputs.tag_name }}
+      release-version: ${{ needs.process-release-drafter-output.outputs.version }}-alpha.${{ github.event.pull_request.number }}.${{ github.run_number }}
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # TODO: PR comment with details about the release
