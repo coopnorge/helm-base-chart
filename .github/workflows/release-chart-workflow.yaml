@@ -27,10 +27,17 @@ on:
         required: true
         description: >-
           GitHub token that is used to create the release.
+    outputs:
+      html-url:
+        value: ${{ jobs.publish-chart-release.outputs.html_url }}
+        description: >-
+          URL to the release that was created.
 
 jobs:
   publish-chart-release:
     runs-on: ubuntu-latest
+    outputs:
+      html_url: ${{ steps.upload-chart.outputs.html_url }}
     steps:
       - name: Checkout the release
         uses: actions/checkout@v4
@@ -59,6 +66,7 @@ jobs:
 
       - name: Upload chart as release artifact
         uses: ncipollo/release-action@v1
+        id: upload-chart
         with:
           tag: ${{ inputs.release-tag }}
           artifacts: coop-app-chart-${{ inputs.release-version }}.tgz

@@ -28,7 +28,6 @@ jobs:
     outputs:
       tag_name: ${{ steps.get-version.outputs.tag_name }}
       version: ${{ steps.get-version.outputs.version }}
-      release_url: ${{ steps.get-version.outputs.html_url }}
     steps:
       - id: get-version
         run: |
@@ -37,8 +36,6 @@ jobs:
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
           echo "tag_name=${{ needs.release-draft.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
-          
-          echo "release_url=${{ needs.release-draft.outputs.html_url }}" >> "$GITHUB_OUTPUT"
 
   release-alpha-version:
     permissions:
@@ -65,9 +62,9 @@ jobs:
         with:
           message: |
             ### 🚀 Alpha Version Published
-
-            **Helm Version:** [${{ needs.process-release-drafter-output.outputs.version }}](${{ needs.process-release-drafter-output.outputs.release_url }})
+            
+            [**${{ needs.process-release-drafter-output.outputs.version }}**](${{ needs.release-alpha-version.outputs.html-url }})
 
             **Tag:** `${{ needs.process-release-drafter-output.outputs.tag_name }}`
 
-            **Commit ID:** `${{ github.sha }}`
+            **Commit ID:** `${{ github.event.pull_request.head.sha }}`
