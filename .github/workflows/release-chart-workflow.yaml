@@ -92,7 +92,7 @@ jobs:
       - name: Update helm chart index
         run: |
           escape_special_chars() {
-              echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
+            echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
           }
 
           # Generate URL for the current release
@@ -100,12 +100,16 @@ jobs:
           mv index.yaml gh-pages/index.yaml
 
           # Fix URLs for previous assets in the release
-          RELEASE_ASSET_NAMES=$(escape_special_chars $(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[].name'))
-          RELEASE_ASSET_URLS=$(escape_special_chars $(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[].url'))
+          RELEASE_ASSETS=$(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]')
+          IFS=$'\n' RELEASE_ASSET_NAMES=($(echo "$RELEASE_ASSETS" | jq -r '.name'))
+          IFS=$'\n' RELEASE_ASSET_URLS=($(echo "$RELEASE_ASSETS" | jq -r '.url'))
           # search index.yaml for all instances of https://.*/download/.*/RELEASE_ASSET_NAME and replace with RELEASE_ASSET_URL
-          if [[ -n "${RELEASE_ASSET_NAMES// /}" ]]; then
-            for i in $(seq 0 $((${#RELEASE_ASSET_NAMES[@]}-1))); do
-                sed -i "s|-.*${RELEASE_ASSET_NAMES[$i]}|${RELEASE_ASSET_URLS[$i]}|g" gh-pages/index.yaml
+          if [[ ${#RELEASE_ASSET_NAMES[@]} -gt 0 ]]; then
+            for i in "${!RELEASE_ASSET_NAMES[@]}"; do
+              RELEASE_ASSET_NAME=$(escape_special_chars "${RELEASE_ASSET_NAMES[$i]}")
+              RELEASE_ASSET_URL=$(escape_special_chars "${RELEASE_ASSET_URLS[$i]}")
+              echo "Replacing $RELEASE_ASSET_NAME with $RELEASE_ASSET_URL"
+              sed -i "s/-.*$RELEASE_ASSET_NAME/- $RELEASE_ASSET_URL/g" gh-pages/index.yaml
             done
           fi
 
