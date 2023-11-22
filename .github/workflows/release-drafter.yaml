@@ -23,8 +23,8 @@ jobs:
     uses: coopnorge/github-workflow-release-drafter/.github/workflows/release-drafter.yaml@v0.3.2
 
   process-release-drafter-output:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
     needs: release-draft
     outputs:
       tag_name: ${{ steps.get-version.outputs.tag_name }}
@@ -48,10 +48,12 @@ jobs:
       release-tag: ${{ needs.process-release-drafter-output.outputs.tag_name }}
       release-version: ${{ needs.process-release-drafter-output.outputs.version }}
       chart-path: charts/coop-app-chart
+      skip-upload: ${{ github.event.pull_request.draft }}
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 
   comment-pr:
+    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
