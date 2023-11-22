@@ -26,7 +26,7 @@ jobs:
     if: github.event_name == 'pull_request'
     needs: release-draft
     outputs:
-      tag_name: ${{ steps.get-version.outputs.tag_name }}
+      tag-name: ${{ steps.get-version.outputs.tag-name }}
       version: ${{ steps.get-version.outputs.version }}
     steps:
       - id: get-version
@@ -35,7 +35,7 @@ jobs:
           RELEASE_VERSION=${RELEASE_VERSION#v}
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
-          echo "tag_name=${{ needs.release-draft.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          echo "tag-name=${{ needs.release-draft.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
 
   release-alpha-version:
     permissions:
@@ -45,7 +45,7 @@ jobs:
     needs: process-release-drafter-output
     with:
       repository: ${{ github.repository }}
-      release-tag: ${{ needs.process-release-drafter-output.outputs.tag_name }}
+      release-tag: ${{ needs.process-release-drafter-output.outputs.tag-name }}
       release-version: ${{ needs.process-release-drafter-output.outputs.version }}
       chart-path: charts/coop-app-chart
     secrets:
@@ -64,7 +64,7 @@ jobs:
           message: |
             ### 🚀 Alpha Version Published
             
-            **Tag:** [${{ needs.process-release-drafter-output.outputs.tag_name }}](${{ needs.release-alpha-version.outputs.html-url }})
+            **Tag:** [${{ needs.process-release-drafter-output.outputs.tag-name }}](${{ needs.release-alpha-version.outputs.html-url }})
             
             **Chart version:** `${{ needs.process-release-drafter-output.outputs.version }}`
             
