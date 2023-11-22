@@ -38,11 +38,16 @@ on:
         value: ${{ jobs.publish-chart-release.outputs.html_url }}
         description: >-
           URL to the release that was created.
+      chart-filename:
+        value: ${{ jobs.publish-chart-release.outputs.chart-filename }}
+        description: >-
+          Filename of the chart that was uploaded to the release.
 
 jobs:
   publish-chart-release:
     runs-on: ubuntu-latest
     outputs:
+      chart-filename: ${{ steps.get-chart-filename.outputs.chart-filename }}
       html_url: ${{ steps.upload-chart.outputs.html_url }}
     steps:
       - name: Checkout the release

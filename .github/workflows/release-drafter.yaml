@@ -64,8 +64,10 @@ jobs:
           message: |
             ### 🚀 Alpha Version Published
             
-            **Chart version:** `${{ needs.process-release-drafter-output.outputs.version }}`
-
             **Tag:** [${{ needs.process-release-drafter-output.outputs.tag_name }}](${{ needs.release-alpha-version.outputs.html-url }})
+            
+            **Chart version:** `${{ needs.process-release-drafter-output.outputs.version }}`
+            
+            **Chart filename:** `${{ needs.release-alpha-version.outputs.chart-filename }}`
 
             **Commit ID:** `${{ github.event.pull_request.head.sha }}`
