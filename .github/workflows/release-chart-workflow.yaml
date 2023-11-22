@@ -1,0 +1,138 @@
+name: Release chart workflow
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+        description: >-
+          Repository that contains the chart to be released. This is the 
+          repository that is checked out and used to generate the chart and 
+          index.
+      release-tag:
+        required: true
+        type: string
+        description: >-
+          Release tag that is used to create the release. This is the tag that 
+          is used to identify the release where the artifact is uploaded to.
+      release-version:
+        required: true
+        type: string
+        description: >-
+          Release version that is used to create the release. This is used as the
+          version in the helm chart, the index and the filename.
+      chart-path:
+        required: true
+        type: string
+        description: >-
+          Path to the helm chart that is to be released. The path must be relative
+          to the repository root.
+    secrets:
+      github-token:
+        required: true
+        description: >-
+          GitHub token that is used to create the release.
+    outputs:
+      html-url:
+        value: ${{ jobs.publish-chart-release.outputs.html_url }}
+        description: >-
+          URL to the release that was created.
+      chart-filename:
+        value: ${{ jobs.publish-chart-release.outputs.chart-filename }}
+        description: >-
+          Filename of the chart that was uploaded to the release.
+
+jobs:
+  publish-chart-release:
+    runs-on: ubuntu-latest
+    outputs:
+      chart-filename: ${{ steps.get-chart-filename.outputs.chart-filename }}
+      html_url: ${{ steps.upload-chart.outputs.html_url }}
+    steps:
+      - name: Checkout the release
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          fetch-depth: 0
+          path: main-repo
+          token: ${{ secrets.github-token }}
+
+      - name: Checkout latest gh-pages
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          ref: gh-pages
+          path: gh-pages
+          token: ${{ secrets.github-token }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.github-token }}
+
+      - name: Generate helm chart
+        run: |
+          helm package main-repo/${{ inputs.chart-path }} --version ${{ inputs.release-version }}
+
+      - name: Get helm chart filename
+        id: get-chart-filename
+        run: |
+          CHART_PATH=${{ inputs.chart-path }}
+          CHART_FILENAME=$(basename $CHART_PATH)-${{ inputs.release-version }}.tgz
+          echo "chart-filename=$CHART_FILENAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload chart as release artifact
+        uses: ncipollo/release-action@v1.13.0
+        id: upload-chart
+        with:
+          tag: ${{ inputs.release-tag }}
+          artifacts: ${{ steps.get-chart-filename.outputs.chart-filename }}
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+
+      - name: Update helm chart index
+        env:
+          GH_TOKEN: ${{ secrets.github-token }}
+        run: |
+          escape_special_chars() {
+            echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
+          }
+
+          # Generate URL for the current release
+          helm repo index --url https://github.com/${{ inputs.repository }}/releases/download/${{ inputs.release-tag }}/ --merge gh-pages/index.yaml .
+          mv index.yaml gh-pages/index.yaml
+
+          # Fix URLs for previous assets in the release
+          RELEASE_ASSETS=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]')
+          mapfile -t RELEASE_ASSET_NAMES < <(echo "$RELEASE_ASSETS" | jq -r '.name')
+          mapfile -t RELEASE_ASSET_URLS < <(echo "$RELEASE_ASSETS" | jq -r '.url')
+          
+          echo "Number of names: ${#RELEASE_ASSET_NAMES[@]}"
+          echo "Number of URLs: ${#RELEASE_ASSET_URLS[@]}"
+          
+          # search index.yaml for all instances of "-.*RELEASE_ASSET_NAME" (which is the URL) and replace with "- RELEASE_ASSET_URL"
+          if [[ ${#RELEASE_ASSET_NAMES[@]} -gt 0 ]]; then
+            for i in "${!RELEASE_ASSET_NAMES[@]}"; do
+              RELEASE_ASSET_NAME=$(escape_special_chars "${RELEASE_ASSET_NAMES[$i]}")
+              RELEASE_ASSET_URL=$(escape_special_chars "${RELEASE_ASSET_URLS[$i]}")
+              echo "Replacing $RELEASE_ASSET_NAME with $RELEASE_ASSET_URL"
+              sed -i "s/-.*$RELEASE_ASSET_NAME/- $RELEASE_ASSET_URL/g" gh-pages/index.yaml
+            done
+          fi
+
+      - name: Configure git
+        working-directory: gh-pages
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Update index file in GitHub pages
+        working-directory: gh-pages
+        run: |
+          git add .
+          git commit -m "Update index with version ${{ inputs.release-version }}"
+          git push origin gh-pages
