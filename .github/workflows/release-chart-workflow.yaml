@@ -113,7 +113,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.github-token }}
         run: |
-          ASSET_URL=$(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[0].url')
+          ASSET_URL=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[0].url')
           echo "asset-base-url="${ASSET_URL%/*}"" >> "$GITHUB_OUTPUT"
 
       - name: Update helm chart index for current release
