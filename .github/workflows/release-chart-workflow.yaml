@@ -107,7 +107,7 @@ jobs:
           mv index.yaml gh-pages/index.yaml
 
           # Fix URLs for previous assets in the release
-          RELEASE_ASSETS=$(cd main-repo && gh release view v0.3.0 --json assets | jq -r '.assets[]')
+          RELEASE_ASSETS=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]')
           mapfile -t RELEASE_ASSET_NAMES < <(echo "$RELEASE_ASSETS" | jq -r '.name')
           mapfile -t RELEASE_ASSET_URLS < <(echo "$RELEASE_ASSETS" | jq -r '.url')
           
