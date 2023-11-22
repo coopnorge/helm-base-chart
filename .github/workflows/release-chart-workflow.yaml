@@ -158,6 +158,12 @@ jobs:
       - name: Update index file in GitHub pages
         working-directory: gh-pages
         run: |
+          # different commit message when upload is skipped
+          if [[ ${{ inputs.skip-upload }} == true ]]; then
+            UPDATE_MESSAGE="Refresh index (version: ${{ inputs.release-version }})"
+          else
+            UPDATE_MESSAGE="Update index with version ${{ inputs.release-version }}"
+          fi
           git add .
-          git commit -m "Update index with version ${{ inputs.release-version }}"
+          git commit -m "$UPDATE_MESSAGE"
           git push origin gh-pages
