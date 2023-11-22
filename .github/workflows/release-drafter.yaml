@@ -67,6 +67,6 @@ jobs:
             
             **Chart version:** `${{ needs.process-release-drafter-output.outputs.version }}`
             
-            **Chart filename:** `${{ needs.release-alpha-version.outputs.chart-filename }}`
+            **Chart filename:** [${{ needs.release-alpha-version.outputs.chart-filename }}](${{ needs.release-alpha-version.outputs.download-url }})
 
             **Commit ID:** `${{ github.event.pull_request.head.sha }}`

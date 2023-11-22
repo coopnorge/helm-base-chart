@@ -35,20 +35,25 @@ on:
           GitHub token that is used to create the release.
     outputs:
       html-url:
-        value: ${{ jobs.publish-chart-release.outputs.html_url }}
+        value: ${{ jobs.publish-chart-release.outputs.html-url }}
         description: >-
           URL to the release that was created.
       chart-filename:
         value: ${{ jobs.publish-chart-release.outputs.chart-filename }}
         description: >-
           Filename of the chart that was uploaded to the release.
+      download-url:
+        value: ${{ jobs.publish-chart-release.outputs.download-url }}
+        description: >-
+          URL to the chart that was uploaded to the release.
 
 jobs:
   publish-chart-release:
     runs-on: ubuntu-latest
     outputs:
       chart-filename: ${{ steps.get-chart-filename.outputs.chart-filename }}
-      html_url: ${{ steps.upload-chart.outputs.html_url }}
+      html-url: ${{ steps.upload-chart.outputs.html_url }}
+      download-url: ${{ steps.get-asset-base-url.outputs.asset-base-url }}/${{ steps.get-chart-filename.outputs.chart-filename }}
     steps:
       - name: Checkout the release
         uses: actions/checkout@v4
@@ -94,7 +99,21 @@ jobs:
           omitDraftDuringUpdate: true
           omitPrereleaseDuringUpdate: true
 
-      - name: Update helm chart index
+      - name: Get asset base URL
+        id: get-asset-base-url
+        env:
+          GH_TOKEN: ${{ secrets.github-token }}
+        run: |
+          ASSET_URL=$(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[0].url')
+          echo "asset-base-url="${ASSET_URL%/*}"" >> "$GITHUB_OUTPUT"
+
+      - name: Update helm chart index for current release
+        run: |
+          # Generate URL for the current release
+          helm repo index --url ${{ steps.get-asset-base-url.outputs.asset-base-url }}/ --merge gh-pages/index.yaml .
+          mv index.yaml gh-pages/index.yaml
+
+      - name: Fix helm chart index links for previous releases
         env:
           GH_TOKEN: ${{ secrets.github-token }}
         run: |
@@ -102,18 +121,14 @@ jobs:
             echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
           }
 
-          # Generate URL for the current release
-          helm repo index --url https://github.com/${{ inputs.repository }}/releases/download/${{ inputs.release-tag }}/ --merge gh-pages/index.yaml .
-          mv index.yaml gh-pages/index.yaml
-
           # Fix URLs for previous assets in the release
           RELEASE_ASSETS=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]')
           mapfile -t RELEASE_ASSET_NAMES < <(echo "$RELEASE_ASSETS" | jq -r '.name')
           mapfile -t RELEASE_ASSET_URLS < <(echo "$RELEASE_ASSETS" | jq -r '.url')
-          
+
           echo "Number of names: ${#RELEASE_ASSET_NAMES[@]}"
           echo "Number of URLs: ${#RELEASE_ASSET_URLS[@]}"
-          
+
           # search index.yaml for all instances of "-.*RELEASE_ASSET_NAME" (which is the URL) and replace with "- RELEASE_ASSET_URL"
           if [[ ${#RELEASE_ASSET_NAMES[@]} -gt 0 ]]; then
             for i in "${!RELEASE_ASSET_NAMES[@]}"; do
