@@ -83,7 +83,7 @@ jobs:
           echo "chart-filename=$CHART_FILENAME" >> "$GITHUB_OUTPUT"
 
       - name: Upload chart as release artifact
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.13.0
         id: upload-chart
         with:
           tag: ${{ inputs.release-tag }}
