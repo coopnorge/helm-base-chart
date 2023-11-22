@@ -102,7 +102,7 @@ jobs:
           mv index.yaml gh-pages/index.yaml
 
           # Fix URLs for previous assets in the release
-          RELEASE_ASSETS=$(gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]')
+          (RELEASE_ASSETS=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]'))
           IFS=$'\n' RELEASE_ASSET_NAMES=($(echo "$RELEASE_ASSETS" | jq -r '.name'))
           IFS=$'\n' RELEASE_ASSET_URLS=($(echo "$RELEASE_ASSETS" | jq -r '.url'))
           # search index.yaml for all instances of https://.*/download/.*/RELEASE_ASSET_NAME and replace with RELEASE_ASSET_URL
