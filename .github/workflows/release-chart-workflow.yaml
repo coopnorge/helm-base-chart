@@ -90,6 +90,8 @@ jobs:
           omitPrereleaseDuringUpdate: true
 
       - name: Update helm chart index
+        env:
+          GH_TOKEN: ${{ secrets.github-token }}
         run: |
           escape_special_chars() {
             echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
