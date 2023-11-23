@@ -5,28 +5,28 @@ on:
     types: [released]
 
 jobs:
-  prepare_release:
+  prepare-release:
     runs-on: ubuntu-latest
     outputs:
-      release_tag: ${{ steps.get_release_version.outputs.release_tag }}
-      release_version: ${{ steps.get_release_version.outputs.release_version }}
+      release-tag: ${{ steps.get-release-version.outputs.release-tag }}
+      release-version: ${{ steps.get-release-version.outputs.release-version }}
     steps:
       - name: Get release version
-        id: get_release_version
+        id: get-release-version
         run: |
           TAG="${{ github.event.release.tag_name }}"
-          echo "release_tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "release_version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          echo "release-tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "release-version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-  publish_release:
+  publish-release:
     permissions:
       contents: write
-    needs: prepare_release
+    needs: prepare-release
     uses: ./.github/workflows/release-chart-workflow.yaml
     with:
       repository: ${{ github.repository }}
-      release-tag: ${{ needs.prepare_release.outputs.release-tag }}
-      release-version: ${{ needs.prepare_release.outputs.release-version }}
+      release-tag: ${{ needs.prepare-release.outputs.release-tag }}
+      release-version: ${{ needs.prepare-release.outputs.release-version }}
       chart-path: charts/coop-app-chart
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
