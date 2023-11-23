@@ -165,5 +165,10 @@ jobs:
             UPDATE_MESSAGE="Update index with version ${{ inputs.release-version }}"
           fi
           git add .
-          git commit -m "$UPDATE_MESSAGE"
-          git push origin gh-pages
+          # Check if there are any changes
+          if git diff --staged --quiet; then
+            echo "No changes in index.yaml to commit"
+          else
+            git commit -m "$UPDATE_MESSAGE"
+            git push origin gh-pages
+          fi
