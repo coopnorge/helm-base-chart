@@ -111,6 +111,18 @@ spec:
             requests:
               memory: {{ .Values.resources.memory }}
               cpu: {{ .Values.resources.cpu }}
+          {{- if .Values.command }}
+          command:
+            {{- range .Values.command }}
+            - {{ . | quote}} 
+            {{- end }}
+          {{- end }}
+          {{- if .Values.args }}
+          args:
+            {{- range .Values.args }}
+            - {{ . | quote}} 
+            {{- end }}
+          {{- end }}
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: topology.gke.io/zone
