@@ -56,9 +56,12 @@ app.kubernetes.io/name: {{ include "coop-app-chart.name" . }}
 Port-naming
 */}}
 {{- define "coop-app-chart.portName" -}}
+{{- $name := .Values.name -}}
 {{- if .Values.connectivity.gRPC.enabled -}}
-grpc-{{ .Values.name }}
-{{- else -}}
-{{ .Values.name }}
+{{- $name = print "grpc-" $name -}}
 {{- end }}
+{{- if gt (len $name) 15 -}}
+{{- $name = substr 0 15 $name -}}
+{{- end -}}
+{{ $name }}
 {{- end }}
