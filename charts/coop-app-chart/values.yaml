@@ -5,7 +5,6 @@ environment: # environment to which you deploy for ex production or staging
 image: # full image url of your image
 port: # the port on which the service is going to run
 
-command: [] # container's entrypoint
 args: [] # container's args
 
 environmentVariables: {}
