@@ -1,3 +1,3 @@
 # Helm Chart
 
-[Docs](docs/index.yaml)
+[Docs](docs/index.md)
