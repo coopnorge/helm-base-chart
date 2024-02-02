@@ -86,7 +86,7 @@ spec:
               port: {{ .Values.port }}
             {{- else }} 
             httpGet:
-              path: {{ .path | default "/" }}
+              path: {{ .health.path | default "/" }}
               port: {{ .port | default .Values.port }}
             {{- end }}
           readinessProbe:
