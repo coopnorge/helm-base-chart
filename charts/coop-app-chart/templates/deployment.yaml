@@ -98,8 +98,8 @@ spec:
               port: {{ .Values.port }}
             {{- else }} 
             httpGet:
-              path: {{ .path | default "/" }}
-              port: {{ .port | default .Values.port }}
+              path: {{ .Values.health.path | default "/" }}
+              port: {{ .Values.health.port | default .Values.port }}
             {{- end }}
           volumeMounts:
             - name: dsdsocket
