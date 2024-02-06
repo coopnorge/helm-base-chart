@@ -30,7 +30,7 @@ Pod labels
 {{ include "coop-app-chart.selectorLabels" . }}
 tags.datadoghq.com/env: {{ .Values.environment }}
 tags.datadoghq.com/service: {{ .Values.name }}
-tags.datadhoghq.com/version: {{ last (splitList ":" .Values.image) }}
+tags.datadoghq.com/version: {{ last (splitList ":" .Values.image) }}
 {{- end }}
 
 {{/*:
