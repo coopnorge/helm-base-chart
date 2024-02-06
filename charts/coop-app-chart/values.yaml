@@ -5,6 +5,7 @@ environment: # environment to which you deploy for ex production or staging
 image:
   repository: # the repository where the image is stored
   tag: # the tag of the image
+  registry: europe-docker.pkg.dev # the registry where the image is stored
   pullPolicy: Always # the policy to pull the image
   
 port: # the port on which the service is going to run
