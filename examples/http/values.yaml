@@ -6,7 +6,9 @@ app:
   name: policy-bot  
   environment: production
   
-  image: palantirtechnologies/policy-bot:1.31.0
+  image: 
+    repository: palantirtechnologies/policy-bot
+    tag: 1.31.0
   port: 8080
   
   environmentVariables:

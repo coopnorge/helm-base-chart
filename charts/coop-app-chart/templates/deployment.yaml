@@ -27,8 +27,8 @@ spec:
         - name: {{ .Values.name }}
           securityContext:
             {{- toYaml .Values.advanced.deployment.securityContext | nindent 12 }}
-          image: "{{ .Values.image }}"
-          imagePullPolicy: Always
+          image: "{{ required "A valid .Values.image.repository is required!" .Values.image.repository }}:{{ required "A valid .Values.image.tag is required!" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "Always" }}
           env: 
             - name: DD_DOGSTATSD_URL
               value: "unix:///var/run/datadog/dsd.socket"
