@@ -2,7 +2,11 @@ name: # the name of the service
 
 environment: # environment to which you deploy for ex production or staging
 
-image: # full image url of your image
+image:
+  repository: # the repository where the image is stored
+  tag: # the tag of the image
+  registry: europe-docker.pkg.dev # the registry where the image is stored
+  
 port: # the port on which the service is going to run
 
 environmentVariables: {}

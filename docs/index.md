@@ -43,7 +43,9 @@ We take an gRPC service as an example setup. Edit `values.yaml`
 app: # app key related to the alias defined in the dependencies.
   name: helloworld
   
-  image: path-to-repo/helloworld:v1.2.9999
+  image: 
+    repository: path-to-repo/helloworld
+    tag: v1.2.9999
   port: 3000
   
   environmentVariables:
