@@ -97,7 +97,7 @@ jobs:
 
       - name: Upload chart as release artifact
         if: ${{ !inputs.skip-upload }}
-        uses: ncipollo/release-action@v1.13.0
+        uses: ncipollo/release-action@v1.14.0
         id: upload-chart
         with:
           tag: ${{ inputs.release-tag }}
