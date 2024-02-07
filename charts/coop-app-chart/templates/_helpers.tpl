@@ -30,7 +30,7 @@ Pod labels
 {{ include "coop-app-chart.selectorLabels" . }}
 tags.datadoghq.com/env: {{ .Values.environment }}
 tags.datadoghq.com/service: {{ .Values.name }}
-tags.datadhoghq.com/version: {{ .Values.image.tag }}
+tags.datadoghq.com/version: {{ .Values.image.tag }}
 {{- end }}
 
 {{/*:
@@ -41,7 +41,7 @@ helm.sh/chart: {{ include "coop-app-chart.chart" . }}
 {{ include "coop-app-chart.selectorLabels" . }}
 tags.datadoghq.com/env: {{ .Values.environment }}
 tags.datadoghq.com/service: {{ .Values.name }}
-tags.datadhoghq.com/version: {{ .Values.image.tag }}
+tags.datadoghq.com/version: {{ .Values.image.tag }}
 {{- end }}
 
 
