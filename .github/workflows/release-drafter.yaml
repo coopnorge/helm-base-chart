@@ -60,7 +60,7 @@ jobs:
     needs: [release-alpha-version, process-release-drafter-output]
     steps:
       - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v2.4.3
+        uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           message: |
             ### 🚀 Alpha Version Published
