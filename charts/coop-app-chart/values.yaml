@@ -1,55 +1,198 @@
-name: # the name of the service 
+# Name of the service.
+# @schema
+# type: string
+# pattern: ^[a-z]{3,62}$
+# @schema
+name:
 
-environment: # environment to which you deploy for ex production or staging
+# Name of the environment.
+# @schema
+# type: string
+# @schema
+environment: 
 
+# A map containg the details of the OCI for this service
+# @schema
+# type: object
+# @schema
 image:
-  repository: # the repository where the image is stored
-  tag: # the tag of the image
-  registry: europe-docker.pkg.dev # the registry where the image is stored
+
+  # The repository of the OCI
+  # @schema
+  # type: string
+  # examples:
+  #   - helloworld-shared-0918/helloworld 
+  # pattern: ^[a-z\/\-]{3,63}$
+  # @schema
+  repository: 
   
-port: # the port on which the service is going to run
+  # The tag of the OC
+  # @schema
+  # type: string
+  # pattern: ^[a-z\-\._]{1,63}$
+  # examples:
+  #   - v1.0.0
+  #   - gitc-348ja3304
+  # @schema
+  tag:
 
+  # The registry of the OCI 
+  # @schema
+  # type: string 
+  # pattern: ^[a-z\.]{3,63}$
+  # examples:
+  #   - europe-docker.pkg.dev 
+  # required: false
+  # @schema
+  registry: europe-docker.pkg.dev 
+
+# The port on which the service is running. 
+# @schema 
+# type: integer 
+# minimum: 2000 
+# maximum: 65000
+# @schema
+port: 
+
+# The environment variables set on the service. The format
+# is ENV_NAME: Value
+# @schema 
+# type: object 
+# examples:
+# - 'LOG_LEVEL: debug' 
+# - 'MODE: cluster'
+# additionalProperties: 
+#   anyOf:
+#   - type: string 
+#   - type: "null"
+# @schema
 environmentVariables: {}
-  #ENV_NAME: Value
 
-
+# The health endpoint of the service. If '.connectivity.gRPC.enabled' 
+# is set to 'true' it will use tcpSocket with `.port` as healthcheck. 
+# @schema
+# type: object
+# properties:
+#   path:
+#     type: string
+#     required: false
+#     default: /
+#     description: Defaults to / if '.connectivity.http.enabled' is set to 'true'
+#   livenessProbe:
+#     type: object
+#     required: false
+#     description: Override livenessprobe, use native format
+#   readinessProbe:
+#     type: object
+#     required: false
+#     description: Override readinessprobe, use native format
+# @schema
 health: {}
-  #if .connectivity.gRPC.enabled it will use a tcpSocket as health check. Will be moved to native gRPC healthcheck when available.
-  #path: / # defaults to '/' if http is enabled
-  #livenessProbe: livenessprobe override, use native format
-  #readinessProbe: readynessprobe override, use native format
     
 
+# Set the autoscaling properties for the service
+# @schema
+# type: object
+# required: false
+# @schema 
 scaling:
-  replicas: 2 
+  # Minimum number of replica
+  # @schema
+  # type: integer
+  # required: false
+  # @schema
+  replicas: 2
+  # Enable or disable autoscaling
+  # @schema
+  # type: boolean
+  # required: false
+  # @schema
   autoScalingEnabled: true
+  # Maximum number of replicas
+  # @schema
+  # type: integer
+  # required: false
+  # @schema
   maxReplicas: 4
+  # CPU percentage on which to scale. This is percentage based the '.resources.cpu'
+  # @schema
+  # required: false
+  # type: integer
+  # @schema
   scalingCpuPercentage: 80 
+  # Memory percentage on which to scale. This is percentage based the '.resources.memory'
+  # @schema
+  # required: false
+  # type: integer
+  # @schema
   scalingMemoryPercentage: 80 
 
+# The resources that the service requires to run
+# @schema
+# type: object
+# required: false
+# @schema
 resources:
+  # The amount of memory for this service. 
+  # @schema
+  # type: string
+  # required: false
+  # @schema
   memory: 64M
+  # The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.
+  # @schema
+  # type: string
+  # required: false
+  # @schema
   cpu: 200m
 
+
+# You can define configmaps and they will be automaticly 
+# mounted as environment variables in the deployment.
+# configMaps:
+#   myServiceCM:
+#     data:
+#       size: 1344
+#       features: fast
+# @schema 
+# type: object
+# required: false
+# additionalProperties:
+#   data:
+#     type: object
+#     additionalProperties:
+#       type: string
+#       description: one or more key value pairs.
+#     examples:
+#       - key: value
+#         other: value
+# @schema 
 configMaps: {}
-  #configMapName:
-  #  data:
-  #    keyname: value 
-  #    longvaluekey: |
-  #        some long value
-  #    mountAsEnvironment: false
-  #    mountAsVolume: false (not yet implemented)
-  #    mountVolumePath: (not yet implemented)
 
-secrets: {} # required external secret manager
-  #secretObjectName:
-  #  provider: gcp (where secrets are stored) 
-  #    secrets:
-  #      key-name: secret-id
-  #    mountAsEnvironment: false
-  #    mountAsVolume: false (not yet implemented)
-  #    mountVolumePath: (not yet implemented)
-
+# You can define secrets as external secrets. Only GCP secrets 
+# are supported at the moment
+# secrets:
+#  secretObjectName:
+#    provider: gcp (where secrets are stored) 
+#    secrets:
+#      key-name: secret-id
+# @schema 
+# type: object
+# required: false
+# additionalProperties:
+#   secrets:
+#     type: object
+#     properties:
+#       provider:
+#         type: string
+#         enum:
+#         - gcp
+#       secrets:
+#         type: object 
+#         additionalProperties:
+#           type: string
+# @schema 
+secrets: {} #
 
 connectivity:
   http:
