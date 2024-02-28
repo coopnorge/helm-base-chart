@@ -8,7 +8,7 @@ app:
   image:
     repository: path-to-repo/helloworld
     tag: v1.2.9999
-  port: "3000"
+  port: 3000
   
   environmentVariables:
     APIS: coopnorge.helloworld.v1 coopnorge.helloworld.v1beta 

@@ -166,10 +166,15 @@
               "default": "false"
             },
             "pathMatcher": {
-              "type": "string",
               "title": "pathMatcher",
               "description": "Path matcher for gRPC routing\nSets on which prefix of a path use use for routing requests to this app.  \nDefaults to \"/coopnorge.\u003cname\u003e.\"",
-              "default": ""
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
             }
           },
           "additionalProperties": false
@@ -193,10 +198,15 @@
               "default": "false"
             },
             "path": {
-              "type": "string",
               "title": "path",
               "description": "The path on which the app is running on\nIf unset it will default to the name of the service",
-              "default": ""
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
             },
             "rewrite": {
               "type": "string",
@@ -226,10 +236,15 @@
               "default": "false"
             },
             "protoDescriptorBinValue": {
-              "type": "string",
               "title": "protoDescriptorBinValue",
               "description": "protoDescriptorBinValue: base64 encoded value of the proto descriptor bin",
-              "default": ""
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
             },
             "services": {
               "type": "array",
@@ -314,7 +329,7 @@
           "type": "string",
           "title": "repository",
           "description": "The repository of the OCI",
-          "default": "",
+          "default": "helloworld-shared-0918/helloworld",
           "examples": [
             "helloworld-shared-0918/helloworld"
           ]
@@ -323,7 +338,7 @@
           "type": "string",
           "title": "tag",
           "description": "The tag of the OC",
-          "default": "",
+          "default": "v1.0.0",
           "examples": [
             "v1.0.0",
             "gitc-348ja3304"
@@ -337,13 +352,13 @@
       "title": "name",
       "description": "Name of the service.",
       "default": "app",
-      "pattern": "^[a-z]{3,62}$"
+      "pattern": "^[a-z\\-]{3,62}$"
     },
     "port": {
       "type": "integer",
       "title": "port",
       "description": "The port on which the service is running. ",
-      "default": "",
+      "default": "3000",
       "minimum": 2000,
       "maximum": 65000
     },
@@ -353,10 +368,17 @@
       "description": "The resources that the service requires to run",
       "properties": {
         "cpu": {
-          "type": "string",
           "title": "cpu",
           "description": "The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.",
-          "default": "200m"
+          "default": "200m",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
         },
         "memory": {
           "type": "string",

@@ -1,7 +1,7 @@
 # Name of the service.
 # @schema
 # type: string
-# pattern: ^[a-z]{3,62}$
+# pattern: ^[a-z\-]{3,62}$
 # @schema
 name: app
 
@@ -23,7 +23,7 @@ image:
   # examples:
   #   - helloworld-shared-0918/helloworld 
   # @schema
-  repository: 
+  repository: helloworld-shared-0918/helloworld 
   
   # The tag of the OC
   # @schema
@@ -32,7 +32,7 @@ image:
   #   - v1.0.0
   #   - gitc-348ja3304
   # @schema
-  tag:
+  tag: v1.0.0
 
   # The registry of the OCI 
   # @schema
@@ -49,7 +49,7 @@ image:
 # minimum: 2000 
 # maximum: 65000
 # @schema
-port: 
+port: 3000
 
 # The environment variables set on the service. The format
 # is ENV_NAME: Value
@@ -138,7 +138,9 @@ resources:
   memory: 64M
   # The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.
   # @schema
-  # type: string
+  # anyOf:
+  # - type: string
+  # - type: integer
   # required: false
   # @schema
   cpu: 200m
@@ -220,7 +222,9 @@ connectivity:
     # The path on which the app is running on
     # If unset it will default to the name of the service
     # @schema
-    # type: string 
+    # anyOf:
+    # - type: string
+    # - type: null
     # required: false
     # @schema
     path: 
@@ -262,7 +266,9 @@ connectivity:
     # Sets on which prefix of a path use use for routing requests to this app.  
     # Defaults to "/coopnorge.<name>."
     # @schema
-    # type: string
+    # anyOf:
+    # - type: string
+    # - type: null
     # required: false
     # @schema
     pathMatcher:
@@ -322,7 +328,9 @@ connectivity:
     dns: api.coop.no
     # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
     # @schema
-    # type: string
+    # anyOf:
+    # - type: string
+    # - type: null
     # required: false
     # @schema
     protoDescriptorBinValue:  
