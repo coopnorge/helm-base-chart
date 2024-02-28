@@ -45,6 +45,7 @@ jobs:
 
   helmchart:
     needs: ["setup"]
+    runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.run-helmchart-ci == 'true' }}
     concurrency:
       group: ${{ github.repository }}-${{ github.workflow }}-helmchart-${{ github.ref }}
