@@ -249,7 +249,7 @@
       "type": "string",
       "title": "environment",
       "description": "Name of the environment.",
-      "default": ""
+      "default": "production"
     },
     "environmentVariables": {
       "type": "object",
@@ -306,7 +306,6 @@
           "title": "registry",
           "description": "The registry of the OCI ",
           "default": "europe-docker.pkg.dev",
-          "pattern": "^[a-z\\.]{3,63}$",
           "examples": [
             "europe-docker.pkg.dev"
           ]
@@ -316,7 +315,6 @@
           "title": "repository",
           "description": "The repository of the OCI",
           "default": "",
-          "pattern": "^[a-z\\/\\-]{3,63}$",
           "examples": [
             "helloworld-shared-0918/helloworld"
           ]
@@ -326,7 +324,6 @@
           "title": "tag",
           "description": "The tag of the OC",
           "default": "",
-          "pattern": "^[a-z\\-\\._]{1,63}$",
           "examples": [
             "v1.0.0",
             "gitc-348ja3304"
@@ -339,7 +336,7 @@
       "type": "string",
       "title": "name",
       "description": "Name of the service.",
-      "default": "",
+      "default": "app",
       "pattern": "^[a-z]{3,62}$"
     },
     "port": {

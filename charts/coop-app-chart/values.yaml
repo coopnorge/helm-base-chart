@@ -3,13 +3,13 @@
 # type: string
 # pattern: ^[a-z]{3,62}$
 # @schema
-name:
+name: app
 
 # Name of the environment.
 # @schema
 # type: string
 # @schema
-environment: 
+environment: production
 
 # A map containg the details of the OCI for this service
 # @schema
@@ -22,14 +22,12 @@ image:
   # type: string
   # examples:
   #   - helloworld-shared-0918/helloworld 
-  # pattern: ^[a-z\/\-]{3,63}$
   # @schema
   repository: 
   
   # The tag of the OC
   # @schema
   # type: string
-  # pattern: ^[a-z\-\._]{1,63}$
   # examples:
   #   - v1.0.0
   #   - gitc-348ja3304
@@ -39,7 +37,6 @@ image:
   # The registry of the OCI 
   # @schema
   # type: string 
-  # pattern: ^[a-z\.]{3,63}$
   # examples:
   #   - europe-docker.pkg.dev 
   # required: false
