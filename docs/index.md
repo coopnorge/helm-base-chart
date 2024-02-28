@@ -128,5 +128,6 @@ manifestRepos:
 ## Development
 
 * When developing make sure to keep the examples up to date
-* The helm schema is generated using https://github.com/dadav/helm-schema
+* The helm schema is generated using [helm-schema][helm-schema]
 
+[helm-schema]: https://github.com/dadav/helm-schema
