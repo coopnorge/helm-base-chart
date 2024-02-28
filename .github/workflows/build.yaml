@@ -62,8 +62,7 @@ jobs:
 
       - name: install helm-schema
         run: |
-          curl -L https://github.com/dadav/helm-schema/releases/download/${VERSION}/helm-schema_${VERSION}_Linux_x86_64.tar.gz | tar -zxf - helm-schema
-          tar -xvf 
+          curl -L https://github.com/dadav/helm-schema/releases/download/${VERSION}/helm-schema_${VERSION}_Linux_x86_64.tar.gz > helm-schema.tar.gz | tar -zxf - helm-schema
         env:
           VERSION: 0.8.2
 
