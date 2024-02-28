@@ -68,7 +68,8 @@ jobs:
 
       - name: validate schema
         run: |
-          diff --ignore-all-space <(./helm-schema -d -c charts/coop-app-chart/) charts/coop-app-chart/values.schema.json
+          ./helm-schema -d -c charts/coop-app-chart/
+          git diff --exit-code charts/coop-app-chart/values.schema.json
 
       - name: test-example grpc
         run: |
