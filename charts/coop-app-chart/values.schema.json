@@ -4,121 +4,88 @@
     "advanced": {
       "type": "object",
       "title": "advanced",
-      "description": "advanced configuration \nThis exposes some configuration options which an user \ngeneraly should not change. ",
+      "description": "advanced configuration \nThis exposes some configuration options which an user \ngeneraly should not change.",
       "properties": {
         "deployment": {
           "type": "object",
           "title": "deployment",
+          "description": "Settings related to the deployment object",
           "properties": {
             "kubeScoreIgnore": {
               "type": "array",
               "title": "kubeScoreIgnore",
+              "description": "kube-score ignore policies. This is only related to\nthe kube-score validation",
               "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "type": "string"
               }
             },
             "podSecurityContext": {
               "type": "object",
               "title": "podSecurityContext",
+              "description": "podSecurityContext sets security contexts which can\nonly set on pod level",
               "properties": {
                 "fsGroup": {
                   "type": "integer",
                   "title": "fsGroup",
+                  "description": "group set on files and mounts",
                   "default": "65534"
                 }
               },
-              "additionalProperties": false,
-              "required": [
-                "fsGroup"
-              ]
+              "additionalProperties": false
             },
             "securityContext": {
               "type": "object",
               "title": "securityContext",
+              "description": "security context set on deployment level",
               "properties": {
                 "capabilities": {
                   "type": "object",
                   "title": "capabilities",
+                  "description": "security related capabilities ",
                   "properties": {
                     "drop": {
                       "type": "array",
                       "title": "drop",
+                      "description": "which capabilities to drop",
                       "items": {
-                        "anyOf": [
-                          {
-                            "type": "string"
-                          }
-                        ]
+                        "type": "string"
                       }
                     }
                   },
-                  "additionalProperties": false,
-                  "required": [
-                    "drop"
-                  ]
+                  "additionalProperties": false
                 },
                 "readOnlyRootFilesystem": {
                   "type": "boolean",
                   "title": "readOnlyRootFilesystem",
+                  "description": "set rootfilesystem to read only",
                   "default": "true"
                 },
                 "runAsGroup": {
                   "type": "integer",
                   "title": "runAsGroup",
+                  "description": "id of the group ",
                   "default": "65534"
                 },
                 "runAsNonRoot": {
                   "type": "boolean",
                   "title": "runAsNonRoot",
+                  "description": "force process as non root",
                   "default": "true"
                 },
                 "runAsUser": {
                   "type": "integer",
                   "title": "runAsUser",
+                  "description": "id of the user",
                   "default": "65534"
                 }
               },
-              "additionalProperties": false,
-              "required": [
-                "capabilities",
-                "readOnlyRootFilesystem",
-                "runAsNonRoot",
-                "runAsUser",
-                "runAsGroup"
-              ]
+              "additionalProperties": false
             }
           },
-          "additionalProperties": false,
-          "required": [
-            "kubeScoreIgnore",
-            "podSecurityContext",
-            "securityContext"
-          ]
+          "additionalProperties": false
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "deployment"
-      ]
+      "additionalProperties": false
     },
     "configMaps": {
       "type": "object",
@@ -143,85 +110,123 @@
     "connectivity": {
       "type": "object",
       "title": "connectivity",
+      "description": "Connectivity settings ",
       "properties": {
         "externalServices": {
           "type": "object",
           "title": "externalServices",
-          "additionalProperties": false
+          "description": "Whitelist external services and endpoints\nExample\ngithub:\n  hosts:\n   - github.com\n   - www.github.com \n   - api.github.com\n   ports:\n     - name: https",
+          "additionalProperties": {
+            "hosts": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "ports": {
+              "items": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "number": {
+                    "type": "integer"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "resolution": {
+              "default": "DNS",
+              "required": false,
+              "type": "string"
+            }
+          }
         },
         "gRPC": {
           "type": "object",
           "title": "gRPC",
+          "description": "Settings for gRPC",
           "properties": {
             "dns": {
               "type": "string",
               "title": "dns",
-              "default": "api.coop.no"
+              "description": "DNS name to listen on",
+              "default": "api.coop.no",
+              "format": "hostname"
             },
             "enabled": {
               "type": "boolean",
               "title": "enabled",
+              "description": "Enable gRPC.",
               "default": "false"
+            },
+            "pathMatcher": {
+              "type": "string",
+              "title": "pathMatcher",
+              "description": "Path matcher for gRPC routing\nSets on which prefix of a path use use for routing requests to this app.  \nDefaults to \"/coopnorge.\u003cname\u003e.\"",
+              "default": ""
             }
           },
-          "additionalProperties": false,
-          "required": [
-            "enabled",
-            "dns"
-          ]
+          "additionalProperties": false
         },
         "http": {
           "type": "object",
           "title": "http",
+          "description": "Settings for HTTP (non gRPC) traffic",
           "properties": {
-            "additionalEndpoints": {
-              "type": "array",
-              "title": "additionalEndpoints",
-              "items": {}
-            },
             "dns": {
               "type": "string",
               "title": "dns",
-              "default": "api.coop.no"
+              "description": "DNS name to listen on",
+              "default": "api.coop.no",
+              "format": "hostname"
             },
             "enabled": {
               "type": "boolean",
               "title": "enabled",
-              "description": "do not enable if you just want to publish gRPC has http. Check \nconnectivity.gRPC.publishAsHTTP",
+              "description": "Enable http. Do not enable if you just want to publish gRPC has http. Check \nconnectivity.gRPC.publishAsHTTP",
               "default": "false"
+            },
+            "path": {
+              "type": "string",
+              "title": "path",
+              "description": "The path on which the app is running on\nIf unset it will default to the name of the service",
+              "default": ""
             },
             "rewrite": {
               "type": "string",
               "title": "rewrite",
-              "description": "#path: # defaults to name (or app.name in case this chart is used as dependency) ",
+              "description": "Where to rewrite to path to. Most containers require\nthe path to be /. ",
               "default": "/"
             }
           },
-          "additionalProperties": false,
-          "required": [
-            "enabled",
-            "dns",
-            "rewrite",
-            "additionalEndpoints"
-          ]
+          "additionalProperties": false
         },
         "httpToGRPC": {
           "type": "object",
           "title": "httpToGRPC",
+          "description": "httpToGRPC translation configuration",
           "properties": {
             "dns": {
               "type": "string",
               "title": "dns",
-              "default": "api.coop.no"
+              "description": "DNS record on which to host the http server on",
+              "default": "api.coop.no",
+              "format": "hostname"
             },
             "enabled": {
               "type": "boolean",
               "title": "enabled",
-              "description": "!! Note: This is susceptible to change.",
+              "description": "Enable or disable the http to gRPC translation",
               "default": "false"
             },
             "protoDescriptorBinValue": {
-              "type": "null",
+              "type": "string",
               "title": "protoDescriptorBinValue",
               "description": "protoDescriptorBinValue: base64 encoded value of the proto descriptor bin",
               "default": ""
@@ -230,25 +235,15 @@
               "type": "array",
               "title": "services",
               "description": "services: list of gRPC services packaged in the proto descriptor",
-              "items": {}
+              "items": {
+                "type": "string"
+              }
             }
           },
-          "additionalProperties": false,
-          "required": [
-            "enabled",
-            "dns",
-            "protoDescriptorBinValue",
-            "services"
-          ]
+          "additionalProperties": false
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "http",
-        "gRPC",
-        "externalServices",
-        "httpToGRPC"
-      ]
+      "additionalProperties": false
     },
     "environment": {
       "type": "string",
@@ -439,9 +434,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [
-    "connectivity",
-    "advanced"
-  ],
   "$schema": "http://json-schema.org/draft-07/schema#"
 }

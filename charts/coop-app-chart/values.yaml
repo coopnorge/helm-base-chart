@@ -194,50 +194,172 @@ configMaps: {}
 # @schema 
 secrets: {} #
 
+# Connectivity settings 
+# @schema
+# type: object
+# required: false
+# @schema
 connectivity:
+  # Settings for HTTP (non gRPC) traffic
+  # @schema
+  # type: object
+  # required: false
+  # @schema
   http:
-    # do not enable if you just want to publish gRPC has http. Check 
+    # Enable http. Do not enable if you just want to publish gRPC has http. Check 
     # connectivity.gRPC.publishAsHTTP
+    # @schema 
+    # type: boolean 
+    # required: false
+    # @schema
     enabled: false
+    # DNS name to listen on
+    # @schema
+    # type: string
+    # format: hostname
+    # required: false
+    # @schema
     dns: api.coop.no 
-    #path: # defaults to name (or app.name in case this chart is used as dependency) 
-    rewrite: / 
-    additionalEndpoints: [] # not yet implemented
+    # The path on which the app is running on
+    # If unset it will default to the name of the service
+    # @schema
+    # type: string 
+    # required: false
+    # @schema
+    path: 
+
+    # Where to rewrite to path to. Most containers require
+    # the path to be /. 
+    # @schema 
+    # type: string 
+    # required: false
+    # default:
+    # @schema
+    rewrite: /
+
+#    additionalEndpoints: [] # not yet implemented
       # - dns: 
       #   path: app.name (default)
       #   rewrite: / (default)
-  gRPC:
-    enabled: false
-    dns: api.coop.no
-    # Sets on which prefix of a path use use for routing requests to this app.  
-    # pathMatchter: defaults to "/coopnorge.<name>."
- 
-  externalServices: {} #white list to services
-  #  github:
-  #    hosts:
-  #        - github.com
-  #        - www.github.com 
-  #        - api.github.com
-  #      ports:
-  #        - name: https
-  #          number: 443
-  #          protocol: https
 
- 
-  httpToGRPC:
-    # !! Note: This is susceptible to change.
+  # Settings for gRPC
+  # @schema
+  # type: object 
+  # required: false
+  # @schema
+  gRPC:
+    # Enable gRPC.
+    # @schema 
+    # type: boolean 
+    # required: false
+    # @schema
     enabled: false
+    # DNS name to listen on
+    # @schema
+    # type: string
+    # format: hostname
+    # required: false
+    # @schema
+    dns: api.coop.no
+    # Path matcher for gRPC routing
+    # Sets on which prefix of a path use use for routing requests to this app.  
+    # Defaults to "/coopnorge.<name>."
+    # @schema
+    # type: string
+    # required: false
+    # @schema
+    pathMatcher:
+  # Whitelist external services and endpoints
+  # Example
+  # github:
+  #   hosts:
+  #    - github.com
+  #    - www.github.com 
+  #    - api.github.com
+  #    ports:
+  #      - name: https
+  # @schema
+  # type: object
+  # required: false
+  # additionalProperties:
+  #   hosts:
+  #     type: array
+  #     items:
+  #       type: string
+  #   ports:
+  #     type: array
+  #     items:
+  #       type: object
+  #       properties:
+  #         name:
+  #           type: string
+  #         number:
+  #           type: integer
+  #         protocol:
+  #           type: string
+  #   resolution:
+  #     type: string
+  #     default: DNS
+  #     required: false
+  # @schema
+  externalServices: {}
+ 
+  # httpToGRPC translation configuration
+  # @schema
+  # type: object
+  # required: false
+  # @schema
+  httpToGRPC:
+    # Enable or disable the http to gRPC translation
+    # @schema
+    # type: boolean
+    # required: false
+    # @schema
+    enabled: false
+    # DNS record on which to host the http server on
+    # @schema 
+    # type: string
+    # format: hostname
+    # required: false
+    # @schema
     dns: api.coop.no
     # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
+    # @schema
+    # type: string
+    # required: false
+    # @schema
     protoDescriptorBinValue:  
     # services: list of gRPC services packaged in the proto descriptor
+    # @schema
+    # type: array
+    # items:
+    #   type: string
+    # required: false
+    # @schema
     services: []  
 
 # advanced configuration 
 # This exposes some configuration options which an user 
-# generaly should not change. 
+# generaly should not change.
+# @schema
+# type: object
+# required: false
+# @schema
 advanced:
+  # Settings related to the deployment object
+  # @schema
+  # type: object
+  # required: false
+  # @schema
   deployment:
+    # kube-score ignore policies. This is only related to
+    # the kube-score validation
+    # @schema
+    # type: array
+    # required: false
+    # items:
+    #   type: string
+    # @schema
     kubeScoreIgnore: 
       - pod-probes
       - pod-networkpolicy 
@@ -245,16 +367,56 @@ advanced:
       - container-resources
       - deployment-has-host-podantiaffinity
       - container-ephemeral-storage-request-and-limit
-    podSecurityContext:       
+    # podSecurityContext sets security contexts which can
+    # only set on pod level
+    # @schema
+    # type: object
+    # required: false
+    # @schema
+    podSecurityContext:
+      # group set on files and mounts
+      # @schema
+      # type: integer
+      # required: false
+      # @schema
       fsGroup: 65534    
-     
+    # security context set on deployment level
+    # @schema
+    # type: object
+    # @schema
     securityContext:
+      # security related capabilities 
+      # @schema 
+      # type: object
+      # @schema
       capabilities:
+        # which capabilities to drop
+        # @schema
+        # type: array
+        # items:
+        #   type: string
+        # @schema
         drop:
           - ALLL
+      # set rootfilesystem to read only
+      # @schema
+      # type: boolean
+      # @schema
       readOnlyRootFilesystem: true
+      # force process as non root
+      # @schema
+      # type: boolean
+      # @schema
       runAsNonRoot: true
+      # id of the user
+      # @schema
+      # type: integer
+      # @schema
       runAsUser: 65534
+      # id of the group 
+      # @schema
+      # type: integer
+      # @schema
       runAsGroup: 65534    
 
  
