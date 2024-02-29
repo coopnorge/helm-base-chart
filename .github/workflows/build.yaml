@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: install helm 
-        uses: azure/setup-helm@v4.0.0
+        uses: azure/setup-helm@v4
         with:
            token: ${{ secrets.GITHUB_TOKEN }} # only needed if version is 'latest'
         id: install
