@@ -1,0 +1,457 @@
+{
+  "type": "object",
+  "properties": {
+    "advanced": {
+      "type": "object",
+      "title": "advanced",
+      "description": "advanced configuration \nThis exposes some configuration options which an user \ngeneraly should not change.",
+      "properties": {
+        "deployment": {
+          "type": "object",
+          "title": "deployment",
+          "description": "Settings related to the deployment object",
+          "properties": {
+            "kubeScoreIgnore": {
+              "type": "array",
+              "title": "kubeScoreIgnore",
+              "description": "kube-score ignore policies. This is only related to\nthe kube-score validation",
+              "items": {
+                "type": "string"
+              }
+            },
+            "podSecurityContext": {
+              "type": "object",
+              "title": "podSecurityContext",
+              "description": "podSecurityContext sets security contexts which can\nonly set on pod level",
+              "properties": {
+                "fsGroup": {
+                  "type": "integer",
+                  "title": "fsGroup",
+                  "description": "group set on files and mounts",
+                  "default": "65534"
+                }
+              },
+              "additionalProperties": false
+            },
+            "securityContext": {
+              "type": "object",
+              "title": "securityContext",
+              "description": "security context set on deployment level",
+              "properties": {
+                "capabilities": {
+                  "type": "object",
+                  "title": "capabilities",
+                  "description": "security related capabilities ",
+                  "properties": {
+                    "drop": {
+                      "type": "array",
+                      "title": "drop",
+                      "description": "which capabilities to drop",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "readOnlyRootFilesystem": {
+                  "type": "boolean",
+                  "title": "readOnlyRootFilesystem",
+                  "description": "set rootfilesystem to read only",
+                  "default": "true"
+                },
+                "runAsGroup": {
+                  "type": "integer",
+                  "title": "runAsGroup",
+                  "description": "id of the group ",
+                  "default": "65534"
+                },
+                "runAsNonRoot": {
+                  "type": "boolean",
+                  "title": "runAsNonRoot",
+                  "description": "force process as non root",
+                  "default": "true"
+                },
+                "runAsUser": {
+                  "type": "integer",
+                  "title": "runAsUser",
+                  "description": "id of the user",
+                  "default": "65534"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "configMaps": {
+      "type": "object",
+      "title": "configMaps",
+      "description": "You can define configmaps and they will be automaticly \nmounted as environment variables in the deployment.\nconfigMaps:\n  myServiceCM:\n    data:\n      size: 1344\n      features: fast",
+      "additionalProperties": {
+        "data": {
+          "additionalProperties": {
+            "description": "one or more key value pairs.",
+            "type": "string"
+          },
+          "examples": [
+            {
+              "key": "value",
+              "other": "value"
+            }
+          ],
+          "type": "object"
+        }
+      }
+    },
+    "connectivity": {
+      "type": "object",
+      "title": "connectivity",
+      "description": "Connectivity settings ",
+      "properties": {
+        "externalServices": {
+          "type": "object",
+          "title": "externalServices",
+          "description": "Whitelist external services and endpoints\nExample\ngithub:\n  hosts:\n   - github.com\n   - www.github.com \n   - api.github.com\n   ports:\n     - name: https",
+          "additionalProperties": {
+            "hosts": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "ports": {
+              "items": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "number": {
+                    "type": "integer"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "resolution": {
+              "default": "DNS",
+              "required": false,
+              "type": "string"
+            }
+          }
+        },
+        "gRPC": {
+          "type": "object",
+          "title": "gRPC",
+          "description": "Settings for gRPC",
+          "properties": {
+            "dns": {
+              "type": "string",
+              "title": "dns",
+              "description": "DNS name to listen on",
+              "default": "api.coop.no",
+              "format": "hostname"
+            },
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "description": "Enable gRPC.",
+              "default": "false"
+            },
+            "pathMatcher": {
+              "title": "pathMatcher",
+              "description": "Path matcher for gRPC routing\nSets on which prefix of a path use use for routing requests to this app.  \nDefaults to \"/coopnorge.\u003cname\u003e.\"",
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "http": {
+          "type": "object",
+          "title": "http",
+          "description": "Settings for HTTP (non gRPC) traffic",
+          "properties": {
+            "dns": {
+              "type": "string",
+              "title": "dns",
+              "description": "DNS name to listen on",
+              "default": "api.coop.no",
+              "format": "hostname"
+            },
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "description": "Enable http. Do not enable if you just want to publish gRPC has http. Check \nconnectivity.gRPC.publishAsHTTP",
+              "default": "false"
+            },
+            "path": {
+              "title": "path",
+              "description": "The path on which the app is running on\nIf unset it will default to the name of the service",
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
+            },
+            "rewrite": {
+              "type": "string",
+              "title": "rewrite",
+              "description": "Where to rewrite to path to. Most containers require\nthe path to be /. ",
+              "default": "/"
+            }
+          },
+          "additionalProperties": false
+        },
+        "httpToGRPC": {
+          "type": "object",
+          "title": "httpToGRPC",
+          "description": "httpToGRPC translation configuration",
+          "properties": {
+            "dns": {
+              "type": "string",
+              "title": "dns",
+              "description": "DNS record on which to host the http server on",
+              "default": "api.coop.no",
+              "format": "hostname"
+            },
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "description": "Enable or disable the http to gRPC translation",
+              "default": "false"
+            },
+            "protoDescriptorBinValue": {
+              "title": "protoDescriptorBinValue",
+              "description": "protoDescriptorBinValue: base64 encoded value of the proto descriptor bin",
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
+            },
+            "services": {
+              "type": "array",
+              "title": "services",
+              "description": "services: list of gRPC services packaged in the proto descriptor",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "string",
+      "title": "environment",
+      "description": "Name of the environment.",
+      "default": "production"
+    },
+    "environmentVariables": {
+      "type": "object",
+      "title": "environmentVariables",
+      "description": "The environment variables set on the service. The format\nis ENV_NAME: Value",
+      "examples": [
+        "LOG_LEVEL: debug",
+        "MODE: cluster"
+      ],
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "global": {
+      "type": "object",
+      "title": "global",
+      "description": "Global values are values that can be accessed from any chart or subchart by exactly the same name."
+    },
+    "health": {
+      "type": "object",
+      "title": "health",
+      "description": "The health endpoint of the service. If '.connectivity.gRPC.enabled' \nis set to 'true' it will use tcpSocket with `.port` as healthcheck. ",
+      "properties": {
+        "livenessProbe": {
+          "type": "object",
+          "description": "Override livenessprobe, use native format"
+        },
+        "path": {
+          "type": "string",
+          "description": "Defaults to / if '.connectivity.http.enabled' is set to 'true'",
+          "default": "/"
+        },
+        "readinessProbe": {
+          "type": "object",
+          "description": "Override readinessprobe, use native format"
+        }
+      },
+      "additionalProperties": false
+    },
+    "image": {
+      "type": "object",
+      "title": "image",
+      "description": "A map containg the details of the OCI for this service",
+      "properties": {
+        "registry": {
+          "type": "string",
+          "title": "registry",
+          "description": "The registry of the OCI ",
+          "default": "europe-docker.pkg.dev",
+          "examples": [
+            "europe-docker.pkg.dev"
+          ]
+        },
+        "repository": {
+          "type": "string",
+          "title": "repository",
+          "description": "The repository of the OCI",
+          "default": "helloworld-shared-0918/helloworld",
+          "examples": [
+            "helloworld-shared-0918/helloworld"
+          ]
+        },
+        "tag": {
+          "type": "string",
+          "title": "tag",
+          "description": "The tag of the OC",
+          "default": "v1.0.0",
+          "examples": [
+            "v1.0.0",
+            "gitc-348ja3304"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "name": {
+      "type": "string",
+      "title": "name",
+      "description": "Name of the service.",
+      "default": "app",
+      "pattern": "^[a-z\\-]{3,62}$"
+    },
+    "port": {
+      "type": "integer",
+      "title": "port",
+      "description": "The port on which the service is running. ",
+      "default": "3000",
+      "minimum": 2000,
+      "maximum": 65000
+    },
+    "resources": {
+      "type": "object",
+      "title": "resources",
+      "description": "The resources that the service requires to run",
+      "properties": {
+        "cpu": {
+          "title": "cpu",
+          "description": "The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.",
+          "default": "200m",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "memory": {
+          "type": "string",
+          "title": "memory",
+          "description": "The amount of memory for this service. ",
+          "default": "64M"
+        }
+      },
+      "additionalProperties": false
+    },
+    "scaling": {
+      "type": "object",
+      "title": "scaling",
+      "description": "Set the autoscaling properties for the service",
+      "properties": {
+        "autoScalingEnabled": {
+          "type": "boolean",
+          "title": "autoScalingEnabled",
+          "description": "Enable or disable autoscaling",
+          "default": "true"
+        },
+        "maxReplicas": {
+          "type": "integer",
+          "title": "maxReplicas",
+          "description": "Maximum number of replicas",
+          "default": "4"
+        },
+        "replicas": {
+          "type": "integer",
+          "title": "replicas",
+          "description": "Minimum number of replica",
+          "default": "2"
+        },
+        "scalingCpuPercentage": {
+          "type": "integer",
+          "title": "scalingCpuPercentage",
+          "description": "CPU percentage on which to scale. This is percentage based the '.resources.cpu'",
+          "default": "80"
+        },
+        "scalingMemoryPercentage": {
+          "type": "integer",
+          "title": "scalingMemoryPercentage",
+          "description": "Memory percentage on which to scale. This is percentage based the '.resources.memory'",
+          "default": "80"
+        }
+      },
+      "additionalProperties": false
+    },
+    "secrets": {
+      "type": "object",
+      "title": "secrets",
+      "description": "You can define secrets as external secrets. Only GCP secrets \nare supported at the moment\nsecrets:\n secretObjectName:\n   provider: gcp (where secrets are stored) \n   secrets:\n     key-name: secret-id",
+      "additionalProperties": {
+        "secrets": {
+          "properties": {
+            "provider": {
+              "enum": [
+                "gcp"
+              ],
+              "type": "string"
+            },
+            "secrets": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

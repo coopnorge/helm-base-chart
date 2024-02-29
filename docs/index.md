@@ -124,3 +124,10 @@ manifestRepos:
 [helm-base-chart]: https://github.com/coopnorge/helm-base-chart/tree/main/examples
 [kubernetes-projects]: https://github.com/coopnorge/kubernetes-projects
 [coop-app-chart-values]: https://github.com/coopnorge/helm-base-chart/blob/main/charts/coop-app-chart/values.yaml
+
+## Development
+
+* When developing make sure to keep the examples up to date
+* The helm schema is generated using [helm-schema][helm-schema]
+
+[helm-schema]: https://github.com/dadav/helm-schema

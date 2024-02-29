@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       run-techdocs-ci: ${{ steps.changes.outputs.techdocs == 'true' }}
+      run-helmchart-ci: ${{ steps.changes.outputs.helmchart == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - id: xdg_cache_hash
@@ -21,6 +22,9 @@ jobs:
           filters: |
             techdocs:
               - 'docs/**'
+            helmchart:
+              - 'charts/coop-app-chart/**'
+              - 'examples/**'
       - name: Debug ...
         run: |
           echo "::${{ steps.changes.outputs }}"
@@ -39,14 +43,66 @@ jobs:
     name: TechDocs
     uses: coopnorge/github-workflow-techdocs/.github/workflows/techdocs.yaml@v0
 
+  helmchart:
+    needs: ["setup"]
+    runs-on: ubuntu-latest
+    if: ${{ needs.setup.outputs.run-helmchart-ci == 'true' }}
+    concurrency:
+      group: ${{ github.repository }}-${{ github.workflow }}-helmchart-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: install helm 
+        uses: azure/setup-helm@v4.0.0
+        with:
+           token: ${{ secrets.GITHUB_TOKEN }} # only needed if version is 'latest'
+        id: install
+
+      - name: install helm-schema
+        run: |
+          curl -L https://github.com/dadav/helm-schema/releases/download/${VERSION}/helm-schema_${VERSION}_Linux_x86_64.tar.gz  | tar -zxf - helm-schema
+        env:
+          VERSION: 0.8.2
+
+      - name: validate schema
+        run: |
+          ./helm-schema -d -c charts/coop-app-chart/
+          git diff --exit-code charts/coop-app-chart/values.schema.json
+
+      - name: test-example grpc
+        run: |
+          helm template .
+        working-directory: examples/grpc
+
+      - name: test-example http
+        run: |
+          helm template .
+        working-directory: examples/http
+
+      - name: test-example addons
+        run: |
+          helm template .
+        working-directory: examples/addons
+
+      - name: test-example multiple
+        run: |
+          helm template .
+        working-directory: examples/multiple
+
+  
+
   build:
     needs:
       - techdocs
+      - helmchart
     if: always()
     runs-on: ubuntu-latest
     steps:
       - run: exit 1
         name: "Catch errors"
         if: |
-          needs.techdocs.result == 'failure' 
+          needs.techdocs.result == 'failure' || 
+          needs.helmchart.result == 'failure' 
  

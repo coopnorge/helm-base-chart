@@ -1,100 +1,370 @@
-name: # the name of the service 
+# Name of the service.
+# @schema
+# type: string
+# pattern: ^[a-z\-]{3,62}$
+# @schema
+name: app
 
-environment: # environment to which you deploy for ex production or staging
+# Name of the environment.
+# @schema
+# type: string
+# @schema
+environment: production
 
+# A map containg the details of the OCI for this service
+# @schema
+# type: object
+# @schema
 image:
-  repository: # the repository where the image is stored
-  tag: # the tag of the image
-  registry: europe-docker.pkg.dev # the registry where the image is stored
+
+  # The repository of the OCI
+  # @schema
+  # type: string
+  # examples:
+  #   - helloworld-shared-0918/helloworld 
+  # @schema
+  repository: helloworld-shared-0918/helloworld 
   
-port: # the port on which the service is going to run
+  # The tag of the OC
+  # @schema
+  # type: string
+  # examples:
+  #   - v1.0.0
+  #   - gitc-348ja3304
+  # @schema
+  tag: v1.0.0
 
+  # The registry of the OCI 
+  # @schema
+  # type: string 
+  # examples:
+  #   - europe-docker.pkg.dev 
+  # required: false
+  # @schema
+  registry: europe-docker.pkg.dev 
+
+# The port on which the service is running. 
+# @schema 
+# type: integer 
+# minimum: 2000 
+# maximum: 65000
+# @schema
+port: 3000
+
+# The environment variables set on the service. The format
+# is ENV_NAME: Value
+# @schema 
+# type: object 
+# examples:
+# - 'LOG_LEVEL: debug' 
+# - 'MODE: cluster'
+# additionalProperties: 
+#   anyOf:
+#   - type: string 
+#   - type: "null"
+# @schema
 environmentVariables: {}
-  #ENV_NAME: Value
 
-
+# The health endpoint of the service. If '.connectivity.gRPC.enabled' 
+# is set to 'true' it will use tcpSocket with `.port` as healthcheck. 
+# @schema
+# type: object
+# properties:
+#   path:
+#     type: string
+#     required: false
+#     default: /
+#     description: Defaults to / if '.connectivity.http.enabled' is set to 'true'
+#   livenessProbe:
+#     type: object
+#     required: false
+#     description: Override livenessprobe, use native format
+#   readinessProbe:
+#     type: object
+#     required: false
+#     description: Override readinessprobe, use native format
+# @schema
 health: {}
-  #if .connectivity.gRPC.enabled it will use a tcpSocket as health check. Will be moved to native gRPC healthcheck when available.
-  #path: / # defaults to '/' if http is enabled
-  #livenessProbe: livenessprobe override, use native format
-  #readinessProbe: readynessprobe override, use native format
     
 
+# Set the autoscaling properties for the service
+# @schema
+# type: object
+# required: false
+# @schema 
 scaling:
-  replicas: 2 
+  # Minimum number of replica
+  # @schema
+  # type: integer
+  # required: false
+  # @schema
+  replicas: 2
+  # Enable or disable autoscaling
+  # @schema
+  # type: boolean
+  # required: false
+  # @schema
   autoScalingEnabled: true
+  # Maximum number of replicas
+  # @schema
+  # type: integer
+  # required: false
+  # @schema
   maxReplicas: 4
+  # CPU percentage on which to scale. This is percentage based the '.resources.cpu'
+  # @schema
+  # required: false
+  # type: integer
+  # @schema
   scalingCpuPercentage: 80 
+  # Memory percentage on which to scale. This is percentage based the '.resources.memory'
+  # @schema
+  # required: false
+  # type: integer
+  # @schema
   scalingMemoryPercentage: 80 
 
+# The resources that the service requires to run
+# @schema
+# type: object
+# required: false
+# @schema
 resources:
+  # The amount of memory for this service. 
+  # @schema
+  # type: string
+  # required: false
+  # @schema
   memory: 64M
+  # The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.
+  # @schema
+  # anyOf:
+  # - type: string
+  # - type: integer
+  # required: false
+  # @schema
   cpu: 200m
 
+
+# You can define configmaps and they will be automaticly 
+# mounted as environment variables in the deployment.
+# configMaps:
+#   myServiceCM:
+#     data:
+#       size: 1344
+#       features: fast
+# @schema 
+# type: object
+# required: false
+# additionalProperties:
+#   data:
+#     type: object
+#     additionalProperties:
+#       type: string
+#       description: one or more key value pairs.
+#     examples:
+#       - key: value
+#         other: value
+# @schema 
 configMaps: {}
-  #configMapName:
-  #  data:
-  #    keyname: value 
-  #    longvaluekey: |
-  #        some long value
-  #    mountAsEnvironment: false
-  #    mountAsVolume: false (not yet implemented)
-  #    mountVolumePath: (not yet implemented)
 
-secrets: {} # required external secret manager
-  #secretObjectName:
-  #  provider: gcp (where secrets are stored) 
-  #    secrets:
-  #      key-name: secret-id
-  #    mountAsEnvironment: false
-  #    mountAsVolume: false (not yet implemented)
-  #    mountVolumePath: (not yet implemented)
+# You can define secrets as external secrets. Only GCP secrets 
+# are supported at the moment
+# secrets:
+#  secretObjectName:
+#    provider: gcp (where secrets are stored) 
+#    secrets:
+#      key-name: secret-id
+# @schema 
+# type: object
+# required: false
+# additionalProperties:
+#   secrets:
+#     type: object
+#     properties:
+#       provider:
+#         type: string
+#         enum:
+#         - gcp
+#       secrets:
+#         type: object 
+#         additionalProperties:
+#           type: string
+# @schema 
+secrets: {} #
 
-
+# Connectivity settings 
+# @schema
+# type: object
+# required: false
+# @schema
 connectivity:
+  # Settings for HTTP (non gRPC) traffic
+  # @schema
+  # type: object
+  # required: false
+  # @schema
   http:
-    # do not enable if you just want to publish gRPC has http. Check 
+    # Enable http. Do not enable if you just want to publish gRPC has http. Check 
     # connectivity.gRPC.publishAsHTTP
+    # @schema 
+    # type: boolean 
+    # required: false
+    # @schema
     enabled: false
+    # DNS name to listen on
+    # @schema
+    # type: string
+    # format: hostname
+    # required: false
+    # @schema
     dns: api.coop.no 
-    #path: # defaults to name (or app.name in case this chart is used as dependency) 
-    rewrite: / 
-    additionalEndpoints: [] # not yet implemented
+    # The path on which the app is running on
+    # If unset it will default to the name of the service
+    # @schema
+    # anyOf:
+    # - type: string
+    # - type: null
+    # required: false
+    # @schema
+    path: 
+
+    # Where to rewrite to path to. Most containers require
+    # the path to be /. 
+    # @schema 
+    # type: string 
+    # required: false
+    # default:
+    # @schema
+    rewrite: /
+
+#    additionalEndpoints: [] # not yet implemented
       # - dns: 
       #   path: app.name (default)
       #   rewrite: / (default)
-  gRPC:
-    enabled: false
-    dns: api.coop.no
-    # Sets on which prefix of a path use use for routing requests to this app.  
-    # pathMatchter: defaults to "/coopnorge.<name>."
- 
-  externalServices: {} #white list to services
-  #  github:
-  #    hosts:
-  #        - github.com
-  #        - www.github.com 
-  #        - api.github.com
-  #      ports:
-  #        - name: https
-  #          number: 443
-  #          protocol: https
 
- 
-  httpToGRPC:
-    # !! Note: This is susceptible to change.
+  # Settings for gRPC
+  # @schema
+  # type: object 
+  # required: false
+  # @schema
+  gRPC:
+    # Enable gRPC.
+    # @schema 
+    # type: boolean 
+    # required: false
+    # @schema
     enabled: false
+    # DNS name to listen on
+    # @schema
+    # type: string
+    # format: hostname
+    # required: false
+    # @schema
+    dns: api.coop.no
+    # Path matcher for gRPC routing
+    # Sets on which prefix of a path use use for routing requests to this app.  
+    # Defaults to "/coopnorge.<name>."
+    # @schema
+    # anyOf:
+    # - type: string
+    # - type: null
+    # required: false
+    # @schema
+    pathMatcher:
+  # Whitelist external services and endpoints
+  # Example
+  # github:
+  #   hosts:
+  #    - github.com
+  #    - www.github.com 
+  #    - api.github.com
+  #    ports:
+  #      - name: https
+  # @schema
+  # type: object
+  # required: false
+  # additionalProperties:
+  #   hosts:
+  #     type: array
+  #     items:
+  #       type: string
+  #   ports:
+  #     type: array
+  #     items:
+  #       type: object
+  #       properties:
+  #         name:
+  #           type: string
+  #         number:
+  #           type: integer
+  #         protocol:
+  #           type: string
+  #   resolution:
+  #     type: string
+  #     default: DNS
+  #     required: false
+  # @schema
+  externalServices: {}
+ 
+  # httpToGRPC translation configuration
+  # @schema
+  # type: object
+  # required: false
+  # @schema
+  httpToGRPC:
+    # Enable or disable the http to gRPC translation
+    # @schema
+    # type: boolean
+    # required: false
+    # @schema
+    enabled: false
+    # DNS record on which to host the http server on
+    # @schema 
+    # type: string
+    # format: hostname
+    # required: false
+    # @schema
     dns: api.coop.no
     # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
+    # @schema
+    # anyOf:
+    # - type: string
+    # - type: null
+    # required: false
+    # @schema
     protoDescriptorBinValue:  
     # services: list of gRPC services packaged in the proto descriptor
+    # @schema
+    # type: array
+    # items:
+    #   type: string
+    # required: false
+    # @schema
     services: []  
 
 # advanced configuration 
 # This exposes some configuration options which an user 
-# generaly should not change. 
+# generaly should not change.
+# @schema
+# type: object
+# required: false
+# @schema
 advanced:
+  # Settings related to the deployment object
+  # @schema
+  # type: object
+  # required: false
+  # @schema
   deployment:
+    # kube-score ignore policies. This is only related to
+    # the kube-score validation
+    # @schema
+    # type: array
+    # required: false
+    # items:
+    #   type: string
+    # @schema
     kubeScoreIgnore: 
       - pod-probes
       - pod-networkpolicy 
@@ -102,16 +372,56 @@ advanced:
       - container-resources
       - deployment-has-host-podantiaffinity
       - container-ephemeral-storage-request-and-limit
-    podSecurityContext:       
+    # podSecurityContext sets security contexts which can
+    # only set on pod level
+    # @schema
+    # type: object
+    # required: false
+    # @schema
+    podSecurityContext:
+      # group set on files and mounts
+      # @schema
+      # type: integer
+      # required: false
+      # @schema
       fsGroup: 65534    
-     
+    # security context set on deployment level
+    # @schema
+    # type: object
+    # @schema
     securityContext:
+      # security related capabilities 
+      # @schema 
+      # type: object
+      # @schema
       capabilities:
+        # which capabilities to drop
+        # @schema
+        # type: array
+        # items:
+        #   type: string
+        # @schema
         drop:
           - ALLL
+      # set rootfilesystem to read only
+      # @schema
+      # type: boolean
+      # @schema
       readOnlyRootFilesystem: true
+      # force process as non root
+      # @schema
+      # type: boolean
+      # @schema
       runAsNonRoot: true
+      # id of the user
+      # @schema
+      # type: integer
+      # @schema
       runAsUser: 65534
+      # id of the group 
+      # @schema
+      # type: integer
+      # @schema
       runAsGroup: 65534    
 
  
