@@ -36,6 +36,7 @@ dependencies:
 ```
 
 After adding the dependencies, generate the lock using the following:
+
 ```bash
 helm dependency build
 ```
