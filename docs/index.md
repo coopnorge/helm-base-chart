@@ -247,7 +247,7 @@ approval_rules:
           - "renovate-coop-norge[bot]"
       only_changed_files:
         paths:
-          - "^infrastructure/kubernetes/helm/.*/Chart\.(yaml|lock)$"
+          - "^infrastructure/kubernetes/helm/.*/Chart\\.(yaml|lock)$"
       has_valid_signatures_by_keys:
         key_ids: ["B5690EEEBB952194"]
 ```
