@@ -37,7 +37,7 @@ app:
       protoDescriptorBinValue: some-base-64-encodedvalue
  
     externalServices:
-      hellworld:
+      helloworld:
         hosts:
           - google.com
           - vg.no 

@@ -67,7 +67,7 @@ app: # app key related to the alias defined in the dependencies.
       enabled: true
  
     externalServices:
-      hellworld:
+      helloworld:
         hosts:
           - google.com
           - vg.no 
@@ -107,10 +107,10 @@ manifestRepos:
     - values-production.yaml
     targetRevision: main
     destinationCluster: api-production
-    # configconnector and exteral secrets require this terraform module in 
+    # configconnector and external secrets require this terraform module in 
     # the service project infrastructure
     # https://github.com/coopnorge/terraform-google-gke-config-connector
-    # if you dont want to consume sercets you can not remove this section.
+    # if you don't want to consume secrets you can not remove this section.
     configConnector:
       enabled: true
       version: v2
