@@ -30,9 +30,14 @@ Now edit `Chart.yaml` and add
 ```yaml
 dependencies:
   - name: coop-app-chart
-    version: 0.2.7
+    version: 0.5.0
     repository: "https://coopnorge.github.io/helm-base-chart"
     alias: app
+```
+
+After adding the dependencies, generate the lock using the following:
+```bash
+helm dependency build
 ```
 
 We take an gRPC service as an example setup. Edit `values.yaml`
