@@ -343,6 +343,29 @@ connectivity:
     # @schema
     services: []  
 
+  # Settings for using http to GRPC transcoding via grpc gateway. 
+  # @schema
+  # type: object
+  # required: false
+  # @schema
+  gRPCGateway:
+    # Enable using http to GRPC transcoding via grpc gateway. 
+    # @schema
+    # type: boolean
+    # required: false
+    # default: false
+    # @schema
+    enabled: false 
+    # Overide the port for gRPCGateway. By default this is 
+    # .port + 1 (default grpc port +1 )
+    # @schema
+    # anyOf:
+    # - type: integer
+    # - type: null
+    # required: false
+    # @schema
+    portOverride: 
+
 # advanced configuration 
 # This exposes some configuration options which an user 
 # generaly should not change.

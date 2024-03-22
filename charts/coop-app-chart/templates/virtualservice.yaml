@@ -79,3 +79,31 @@ spec:
           port:
             number: {{ .Values.port }}
 {{- end }}
+
+{{- if .Values.connectivity.gRPCGateway.enabled }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}-grpc-gateway
+  labels:
+    {{- include "coop-app-chart.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ .Values.connectivity.gRPC.dns }}
+  gateways:
+    - istio-system/gateway-http
+  http:
+    - match:
+        - gateways:
+          - istio-system/gateway-http
+          uri:
+            prefix: /{{ .Values.name }}
+      rewrite: 
+        uri: /
+      route:
+      - destination:
+          host: {{ .Values.name }}
+          port:
+            number: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
+{{- end }}
