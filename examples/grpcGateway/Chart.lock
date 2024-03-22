@@ -1,0 +1,6 @@
+dependencies:
+- name: coop-app-chart
+  repository: file://../../charts/coop-app-chart
+  version: 0.0.0
+digest: sha256:b036e065ae29d97716eb171cb0f170f61be779de2b0528a9ead06e642be80d10
+generated: "2024-03-22T13:07:56.920814+01:00"

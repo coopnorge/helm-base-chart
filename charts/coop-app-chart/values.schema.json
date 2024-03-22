@@ -179,6 +179,31 @@
           },
           "additionalProperties": false
         },
+        "gRPCGateway": {
+          "type": "object",
+          "title": "gRPCGateway",
+          "description": "Settings for using http to GRPC transcoding via grpc gateway. ",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "description": "Enable using http to GRPC transcoding via grpc gateway. ",
+              "default": false
+            },
+            "portOverride": {
+              "title": "portOverride",
+              "description": "Overide the port for gRPCGateway. By default this is \n.port + 1 (default grpc port +1 )",
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {}
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
         "http": {
           "type": "object",
           "title": "http",

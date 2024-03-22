@@ -46,6 +46,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.labels['tags.datadoghq.com/version']
+            {{- if .Values.connectivity.gRPCGateway.enabled }}
+            - name: GRPC_GW_PORT
+              value: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
+            {{- end }}
+            - name: PORT
+              value: {{ .Values.port }}
             {{- range $key, $value := .Values.environmentVariables }}
             - name: {{ $key }}
               {{- if contains "\n" $value }}
@@ -77,6 +83,11 @@ spec:
             - name: {{ include "coop-app-chart.portName" . }}
               containerPort: {{ .Values.port }}
               protocol: TCP
+            {{- if .Values.connectivity.gRPCGateway.enabled }}
+            - name: grpc-gateway
+              port: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
+              port: http
+            {{- end }}
           livenessProbe:
             {{- if .Values.health.livenessProbe -}}
             {{ .Values.health.livenessProbe | toYaml | nindent 12}}
