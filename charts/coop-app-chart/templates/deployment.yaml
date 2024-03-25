@@ -51,7 +51,7 @@ spec:
               value: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
             {{- end }}
             - name: PORT
-              value: {{ .Values.port }}
+              value: "{{ .Values.port }}"
             {{- range $key, $value := .Values.environmentVariables }}
             - name: {{ $key }}
               {{- if contains "\n" $value }}
