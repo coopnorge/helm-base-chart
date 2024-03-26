@@ -3,13 +3,23 @@ entries:
   coop-app-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-03-26T08:37:55.969466691Z"
+    description: A Helm chart for Kubernetes
+    digest: 2dc8015f8af235f801663c590299756de65524247dbd5c9b0ab44714553f8166
+    name: coop-app-chart
+    type: application
+    urls:
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.6.3/coop-app-chart-0.6.3.tgz
+    version: 0.6.3
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-03-25T14:28:56.706279984Z"
     description: A Helm chart for Kubernetes
     digest: 1005d37efee3b02912941d01168ab1fe70176c23b2b0c16eb7b31d736614914d
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-8d44d952801596906aa8/coop-app-chart-0.6.3-alpha.72.222.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.6.3/coop-app-chart-0.6.3-alpha.72.222.tgz
     version: 0.6.3-alpha.72.222
   - apiVersion: v2
     appVersion: 1.16.0
@@ -19,7 +29,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-8d44d952801596906aa8/coop-app-chart-0.6.3-alpha.72.221.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.6.3/coop-app-chart-0.6.3-alpha.72.221.tgz
     version: 0.6.3-alpha.72.221
   - apiVersion: v2
     appVersion: 1.16.0
@@ -29,7 +39,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-8d44d952801596906aa8/coop-app-chart-0.6.3-alpha.72.220.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.6.3/coop-app-chart-0.6.3-alpha.72.220.tgz
     version: 0.6.3-alpha.72.220
   - apiVersion: v2
     appVersion: 1.16.0
@@ -1011,4 +1021,4 @@ entries:
     urls:
     - https://github.com/coopnorge/helm-base-chart/releases/download/coop-app-chart-0.1.0/coop-app-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-25T14:28:56.705600157Z"
+generated: "2024-03-26T08:37:55.968812451Z"
