@@ -15,6 +15,7 @@ spec:
     - name: grpc-gateway
       port: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
       protocol: TCP
+      targetPort: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
     {{- end }}
   selector:
     {{- include "coop-app-chart.selectorLabels" . | nindent 4 }}
