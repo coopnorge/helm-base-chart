@@ -86,7 +86,7 @@ spec:
             {{- if .Values.connectivity.gRPCGateway.enabled }}
             - name: grpc-gateway
               containerPort: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
-              protocol: HTTP
+              protocol: TCP
             {{- end }}
           livenessProbe:
             {{- if .Values.health.livenessProbe -}}
