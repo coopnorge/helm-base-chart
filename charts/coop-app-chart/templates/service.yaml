@@ -12,7 +12,7 @@ spec:
       protocol: TCP
       name: {{ include "coop-app-chart.portName" . }}
     {{- if .Values.connectivity.gRPCGateway.enabled }}
-    - name: grpc-gateway
+    - name: http-grpc-gateway
       port: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
       protocol: TCP
       targetPort: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
