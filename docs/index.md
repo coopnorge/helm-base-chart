@@ -43,40 +43,38 @@ helm dependency build
 
 We take an gRPC service as an example setup. Edit `values.yaml`
 
-```yaml
----
-
+```yaml title="values.yaml"
 app: # app key related to the alias defined in the dependencies.
   name: helloworld
-  
-  image: 
+
+  image:
     repository: path-to-repo/helloworld
     tag: v1.2.9999
   port: 3000
-  
+
   environmentVariables:
-    APIS: coopnorge.helloworld.v1 coopnorge.helloworld.v1beta 
-  
+    APIS: coopnorge.helloworld.v1 coopnorge.helloworld.v1beta
+
   secrets:  # requires external secret manager
     helloworld:
-      provider: gcp 
+      provider: gcp
       secrets:
         TEST: testy
       mountAsEnvironment: true
-  
+
   resources:
     memory: 128M
     cpu: 2
-  
+
   connectivity:
     gRPC:
       enabled: true
- 
+
     externalServices:
       helloworld:
         hosts:
           - google.com
-          - vg.no 
+          - vg.no
           - coop.no
         ports:
           - name: https
@@ -92,9 +90,9 @@ app: # app key related to the alias defined in the dependencies.
 
 Then create another file called `values-production.yaml`
 
-```yaml
+```yaml title="values-production.yaml"
 app:
-  environment: production 
+  environment: production
   image: path-to-repo/helloworld:<my-prd-tag>
 ```
 
@@ -103,7 +101,7 @@ spec the input can be found [here][coop-app-chart-values]
 
 In [`kubernetes-projects`][kubernetes-projects] configure you projects as this
 
-```yaml
+```yaml title="projects/helloworld.yaml"
 manifestRepos:
   - repoURL: https://github.com/coopnorge/helloworld
     service: helloworld
@@ -113,7 +111,7 @@ manifestRepos:
     - values-production.yaml
     targetRevision: main
     destinationCluster: api-production
-    # configconnector and external secrets require this terraform module in 
+    # configconnector and external secrets require this terraform module in
     # the service project infrastructure
     # https://github.com/coopnorge/terraform-google-gke-config-connector
     # if you don't want to consume secrets you can not remove this section.
