@@ -31,6 +31,7 @@ app:
       enabled: true
     httpToGRPC:
       enabled: true
+      pathMatcher: hello-world
       services:
       - coopnorge.helloworld.v1.HelloWorldAPI
       - coopnorge.helloworld.v1beta1.HelloWorldAPI

@@ -260,6 +260,17 @@
               "description": "Enable or disable the http to gRPC translation",
               "default": "false"
             },
+            "pathMatcher": {
+              "title": "pathMatcher",
+              "description": "Path matcher for httpTOgRPC routing\nSets on which prefix of a path use use for routing requests to this app.  \nDefaults to \"\u003cname\u003e\" resulting in api.coop.no/\u003cname\u003e and api.coop.no/\u003cname\u003e/",
+              "default": "",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {}
+              ]
+            },
             "protoDescriptorBinValue": {
               "title": "protoDescriptorBinValue",
               "description": "protoDescriptorBinValue: base64 encoded value of the proto descriptor bin",
