@@ -326,6 +326,16 @@ connectivity:
     # required: false
     # @schema
     dns: api.coop.no
+    # Path matcher for httpTOgRPC routing
+    # Sets on which prefix of a path use use for routing requests to this app.  
+    # Defaults to "<name>" resulting in api.coop.no/<name> and api.coop.no/<name>/
+    # @schema
+    # anyOf:
+    # - type: string
+    # - type: null
+    # required: false
+    # @schema
+    pathMatcher:
     # protoDescriptorBinValue: base64 encoded value of the proto descriptor bin
     # @schema
     # anyOf:
