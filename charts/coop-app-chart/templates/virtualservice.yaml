@@ -70,11 +70,11 @@ spec:
         - gateways:
           - istio-system/gateway-http
           uri:
-            prefix: /{{ .Values.connectivity.httpToGRPC.pathMatcher | default .Values.name }}
+            prefix: /{{ .Values.connectivity.httpToGRPC.pathMatcher | default .Values.name }}/
         - gateways:
           - istio-system/gateway-http
           uri:
-            prefix: /{{ .Values.connectivity.httpToGRPC.pathMatcher | default .Values.name }}/
+            prefix: /{{ .Values.connectivity.httpToGRPC.pathMatcher | default .Values.name }}
       rewrite: 
         uri: /
       route:
