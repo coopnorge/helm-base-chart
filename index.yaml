@@ -3,6 +3,16 @@ entries:
   coop-app-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-05-03T09:58:42.937852845Z"
+    description: A Helm chart for Kubernetes
+    digest: 31fe25c9c0b617a41e06588109d07d53be68e7a54396dc582d9d59cdadb3159a
+    name: coop-app-chart
+    type: application
+    urls:
+    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-706aa3e6f035eb62ffff/coop-app-chart-0.7.1-alpha.83.244.tgz
+    version: 0.7.1-alpha.83.244
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-04-29T10:50:46.712883734Z"
     description: A Helm chart for Kubernetes
     digest: 3182099a45fa1db0ae8d784922b8b3e64037902616e8987f4502452bcc7af1aa
@@ -1191,4 +1201,4 @@ entries:
     urls:
     - https://github.com/coopnorge/helm-base-chart/releases/download/coop-app-chart-0.1.0/coop-app-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-29T10:50:46.712100224Z"
+generated: "2024-05-03T09:58:42.93721265Z"
