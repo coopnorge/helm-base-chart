@@ -33,7 +33,7 @@ tags.datadoghq.com/service: {{ .Values.name }}
 tags.datadoghq.com/version: {{ .Values.image.tag }}
 {{- end }}
 
-{{/*:
+{{/*
 Deployment labels
 */}}
 {{- define "coop-app-chart.deploymentLabels" -}}
@@ -56,12 +56,20 @@ app.kubernetes.io/name: {{ include "coop-app-chart.name" . }}
 Port-naming
 */}}
 {{- define "coop-app-chart.portName" -}}
-{{- $name := .Values.name -}}
-{{- if .Values.connectivity.gRPC.enabled -}}
-{{- $name = print "grpc-" $name -}}
-{{- end }}
-{{- if gt (len $name) 15 -}}
-{{- $name = substr 0 15 $name -}}
+{{- if gt (len .Values.name ) 15 }}
+{{ substr 0 15 .Values.name }}
 {{- end -}}
-{{ $name }}
+{{ .Values.name }}
 {{- end }}
+
+{{/*
+App-Protocol
+*/}}
+{{- define "coop-app-chart.appProtocol" -}}
+{{- if .Values.connectivity.gRPC.enabled -}}
+grpc
+{{- else -}}
+http
+{{- end }}
+{{- end }}
+

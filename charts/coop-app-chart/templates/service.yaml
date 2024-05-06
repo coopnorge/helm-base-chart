@@ -11,11 +11,13 @@ spec:
       targetPort: {{ .Values.port }}
       protocol: TCP
       name: {{ include "coop-app-chart.portName" . }}
+      appProtocol: {{ include "coop-app-chart.appProtocol" . }}  
     {{- if .Values.connectivity.gRPCGateway.enabled }}
-    - name: http-grpc-gateway
+    - name: grpc-gateway
       port: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
       protocol: TCP
       targetPort: {{ .Values.connectivity.gRPCGateway.portOverride | default (.Values.port | add1f)  }}
+      appProtocol: http
     {{- end }}
   selector:
     {{- include "coop-app-chart.selectorLabels" . | nindent 4 }}
