@@ -130,6 +130,12 @@ scaling:
 # required: false
 # @schema
 resources:
+  # The amount of memory for istio sidecar
+  # @schema
+  # type: string
+  # required: false
+  # @schema
+  istioProxyMemory: 64M
   # The amount of memory for this service. 
   # @schema
   # type: string

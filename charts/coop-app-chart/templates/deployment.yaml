@@ -19,6 +19,7 @@ spec:
         {{- include "coop-app-chart.podLabels" . | nindent 8 }}
       annotations:
         proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+        sidecar.istio.io/proxyMemory: {{ .Values.resources.istioProxyMemory  | default "64M" }}
     spec:
       serviceAccountName: {{ .Values.name }}
       securityContext:
