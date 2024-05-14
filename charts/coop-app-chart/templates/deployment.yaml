@@ -20,6 +20,7 @@ spec:
       annotations:
         proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
         sidecar.istio.io/proxyMemory: {{ .Values.resources.istioProxyMemory  | default "64M" }}
+        sidecar.istio.io/proxyCPU: {{ .Values.resources.istioProxyCpu  | default "20m" }}
     spec:
       serviceAccountName: {{ .Values.name }}
       securityContext:

@@ -403,6 +403,12 @@
       "title": "resources",
       "description": "The resources that the service requires to run",
       "properties": {
+        "istioProxyCpu": {
+          "type": "string",
+          "title": "memory",
+          "description": "The amount of CPU for the istio sidecar service. ",
+          "default": "20m"
+        },
         "cpu": {
           "title": "cpu",
           "description": "The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.",

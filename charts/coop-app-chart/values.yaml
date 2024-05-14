@@ -136,6 +136,12 @@ resources:
   # required: false
   # @schema
   istioProxyMemory: 64M
+  # The amount of CPU for istio sidecar
+  # @schema
+  # type: string
+  # required: false
+  # @schema
+  istioProxyCpu: 20m
   # The amount of memory for this service. 
   # @schema
   # type: string
