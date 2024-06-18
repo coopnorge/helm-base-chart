@@ -3,13 +3,23 @@ entries:
   coop-app-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-06-18T15:49:53.063081676Z"
+    description: A Helm chart for Kubernetes
+    digest: 3dc6210860d942f8f6a3c6d573863da771256fa2bde3174abe434512e0894b5d
+    name: coop-app-chart
+    type: application
+    urls:
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.9.1/coop-app-chart-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-06-18T15:12:42.936011733Z"
     description: A Helm chart for Kubernetes
     digest: ac694f312fe9b1b51945ed623788c0fcb1fc1ac79ddbaf7832f5afbcb93b679c
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-85645aaa7347a1759ed4/coop-app-chart-0.9.1-alpha.86.265.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.9.1/coop-app-chart-0.9.1-alpha.86.265.tgz
     version: 0.9.1-alpha.86.265
   - apiVersion: v2
     appVersion: 1.16.0
@@ -19,7 +29,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-85645aaa7347a1759ed4/coop-app-chart-0.9.1-alpha.86.264.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.9.1/coop-app-chart-0.9.1-alpha.86.264.tgz
     version: 0.9.1-alpha.86.264
   - apiVersion: v2
     appVersion: 1.16.0
@@ -29,7 +39,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-85645aaa7347a1759ed4/coop-app-chart-0.9.1-alpha.86.263.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.9.1/coop-app-chart-0.9.1-alpha.86.263.tgz
     version: 0.9.1-alpha.86.263
   - apiVersion: v2
     appVersion: 1.16.0
@@ -39,7 +49,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-85645aaa7347a1759ed4/coop-app-chart-0.9.1-alpha.86.262.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.9.1/coop-app-chart-0.9.1-alpha.86.262.tgz
     version: 0.9.1-alpha.86.262
   - apiVersion: v2
     appVersion: 1.16.0
@@ -49,7 +59,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-85645aaa7347a1759ed4/coop-app-chart-0.9.1-alpha.86.261.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.9.1/coop-app-chart-0.9.1-alpha.86.261.tgz
     version: 0.9.1-alpha.86.261
   - apiVersion: v2
     appVersion: 1.16.0
@@ -1351,4 +1361,4 @@ entries:
     urls:
     - https://github.com/coopnorge/helm-base-chart/releases/download/coop-app-chart-0.1.0/coop-app-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-18T15:12:42.9352723Z"
+generated: "2024-06-18T15:49:53.062202077Z"
