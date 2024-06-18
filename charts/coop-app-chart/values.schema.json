@@ -405,8 +405,8 @@
       "properties": {
         "istioProxyCpu": {
           "type": "string",
-          "title": "memory",
-          "description": "The amount of CPU for the istio sidecar service. ",
+          "title": "istioProxyCpu",
+          "description": "The amount of CPU for the istio sidecar service.",
           "default": "20m"
         },
         "cpu": {
@@ -424,14 +424,14 @@
         },
         "istioProxyMemory": {
           "type": "string",
-          "title": "memory",
-          "description": "The amount of memory for the istio sidecar service. ",
+          "title": "istioProxyMemory",
+          "description": "The amount of memory for the istio sidecar service.",
           "default": "64M"
         },
         "memory": {
           "type": "string",
           "title": "memory",
-          "description": "The amount of memory for this service. ",
+          "description": "The amount of memory for this service.",
           "default": "64M"
         }
       },
