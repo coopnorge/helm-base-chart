@@ -58,7 +58,7 @@ Port-naming
 {{- define "coop-app-chart.portName" -}}
 {{- if gt (len .Values.name ) 15 }}
 {{- substr 0 15 .Values.name -}}
-{{- end -}}
+{{- else -}}
 {{- .Values.name -}}
 {{- end }}
 
