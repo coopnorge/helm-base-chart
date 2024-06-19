@@ -3,13 +3,23 @@ entries:
   coop-app-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-06-19T10:55:05.976717453Z"
+    description: A Helm chart for Kubernetes
+    digest: c0adbe124a16de2560b99c289dc9e8b3d0f20bfbc96bb0e073b8a4bb7fbf7701
+    name: coop-app-chart
+    type: application
+    urls:
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.10.0/coop-app-chart-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-06-19T10:43:45.102904027Z"
     description: A Helm chart for Kubernetes
     digest: 27291e3c40f7d3a712035332113d4e25a56311be02fb4473b10513dbbd375786
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-b9d48e0f0dc565151c5d/coop-app-chart-0.9.4-alpha.89.276.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.10.0/coop-app-chart-0.9.4-alpha.89.276.tgz
     version: 0.9.4-alpha.89.276
   - apiVersion: v2
     appVersion: 1.16.0
@@ -19,7 +29,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-b9d48e0f0dc565151c5d/coop-app-chart-0.9.4-alpha.89.275.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.10.0/coop-app-chart-0.9.4-alpha.89.275.tgz
     version: 0.9.4-alpha.89.275
   - apiVersion: v2
     appVersion: 1.16.0
@@ -29,7 +39,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-b9d48e0f0dc565151c5d/coop-app-chart-0.9.4-alpha.89.274.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/v0.10.0/coop-app-chart-0.9.4-alpha.89.274.tgz
     version: 0.9.4-alpha.89.274
   - apiVersion: v2
     appVersion: 1.16.0
@@ -1441,4 +1451,4 @@ entries:
     urls:
     - https://github.com/coopnorge/helm-base-chart/releases/download/coop-app-chart-0.1.0/coop-app-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-19T10:43:45.102005386Z"
+generated: "2024-06-19T10:55:05.975963692Z"
