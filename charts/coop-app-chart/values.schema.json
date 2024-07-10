@@ -403,18 +403,6 @@
       "title": "resources",
       "description": "The resources that the service requires to run",
       "properties": {
-        "istioProxyCpu": {
-          "type": "string",
-          "title": "istioProxyCpu",
-          "description": "The amount of CPU for the istio sidecar service.",
-          "default": "20m"
-        },
-        "istioProxyCpuLimit": {
-          "type": "string",
-          "title": "istioProxyCpuLimit",
-          "description": "The CPU limit for the istio sidecar service.",
-          "default": "1000m"
-        },
         "cpu": {
           "title": "cpu",
           "description": "The amount of CPU for this service. 1 = 1 CPU and 500m = 0.5 CPU.",
@@ -428,16 +416,28 @@
             }
           ]
         },
+        "istioProxyCpu": {
+          "type": "string",
+          "title": "istioProxyCpu",
+          "description": "The amount of CPU for istio sidecar",
+          "default": "20m"
+        },
+        "istioProxyCpuLimit": {
+          "type": "string",
+          "title": "istioProxyCpuLimit",
+          "description": "The CPU limit for istio sidecar",
+          "default": "1000m"
+        },
         "istioProxyMemory": {
           "type": "string",
           "title": "istioProxyMemory",
-          "description": "The amount of memory for the istio sidecar service.",
+          "description": "The amount of memory for istio sidecar",
           "default": "64Mi"
         },
         "istioProxyMemoryLimit": {
           "type": "string",
           "title": "istioProxyMemoryLimit",
-          "description": "The memory limit for the istio sidecar service.",
+          "description": "The memory limit for istio sidecar",
           "default": "1Gi"
         },
         "memory": {
