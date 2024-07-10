@@ -81,6 +81,20 @@
           "description": "Settings related to the deployment object",
           "title": "deployment",
           "type": "object"
+        },
+        "serviceaccount": {
+          "additionalProperties": {
+            "annotations": {
+              "additionalProperties": {
+                "description": "one or more key value pairs.",
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "description": "Settings related to the serviceaccount object",
+          "title": "serviceaccount",
+          "type": "object"
         }
       },
       "description": "advanced configuration \nThis exposes some configuration options which an user \ngeneraly should not change.",

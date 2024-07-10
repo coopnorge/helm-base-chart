@@ -408,6 +408,19 @@ connectivity:
 # required: false
 # @schema
 advanced:
+  # Settings related to the serviceaccount object
+  # @schema
+  # type: object
+  # required: false
+  # additionalProperties:
+  #   annotations:
+  #     type: object
+  #     additionalProperties:
+  #       type: string
+  #       description: one or more key value pairs.
+  # @schema
+  serviceaccount: {}
+
   # Settings related to the deployment object
   # @schema
   # type: object

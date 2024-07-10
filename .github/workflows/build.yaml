@@ -90,6 +90,10 @@ jobs:
         run: |
           helm template .
         working-directory: examples/multiple
+      - name: test-example serviceaccount-annotation
+        run: |
+          helm template .
+        working-directory: examples/serviceaccount-annotation
 
   
 
