@@ -154,7 +154,7 @@ resources:
   # required: false
   # @schema
   istioProxyCpuLimit: 1000m
-  # The amount of memory for this service. 
+  # The amount of memory for this service.
   # @schema
   # type: string
   # required: false
