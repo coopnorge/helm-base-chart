@@ -1,1 +1,2 @@
 FROM ghcr.io/coopnorge/engineering-docker-images/e0/techdocs:latest@sha256:a22c07b1dcb2e05badbcc3c846336b7cf70e975e9230b0789b9875faf548c53b AS techdocs
+FROM ghcr.io/coopnorge/engineering-docker-images/e0/devtools-terraform-v1beta1:latest@sha256:5212e4cfbd7c5bafa82d90558961295a4748e3d004dc423cb00d7e0abcf25a3d AS terraform-devtools

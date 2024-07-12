@@ -1,8 +1,30 @@
----
 version: 2
+
+registries:
+  coop-ghcr:
+    type: docker-registry
+    url: ghcr.io
+    username: CoopGithubServiceaccount
+    password: ${{ secrets.DEPENDABOT_GHCR_PULL }}
+  coop-terraform:
+    type: terraform-registry
+    url: https://app.spacelift.io
+    token: ${{ secrets.SPACELIFT_READ_TOKEN }}
 
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "/docker-compose"
+    schedule:
+      interval: "daily"
+    registries:
+      - coop-ghcr
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure/terraform-shared"
+    registries:
+      - coop-terraform
     schedule:
       interval: "daily"

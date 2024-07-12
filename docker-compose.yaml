@@ -19,6 +19,16 @@ services:
       - "127.0.0.1:3000:3000/tcp"
       - "127.0.0.1:8000:8000/tcp"
     command: serve
+  terraform-devtools:
+    build:
+      context: docker-compose
+      target: terraform-devtools
+    working_dir: /srv/workspace
+    command: validate terraform_init_args="-backend=false"
+    volumes:
+      - .:/srv/workspace:z
+      - xdg-cache-home:/root/.cache
+      - $HOME/.terraform.d:/root/.terraform.d/
 networks:
   default:
 volumes:
