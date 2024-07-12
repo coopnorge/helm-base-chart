@@ -9,8 +9,10 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     outputs:
-      run-techdocs-ci: ${{ steps.changes.outputs.techdocs == 'true' }}
+      run-techdocs-ci: ${{ steps.changes.outputs.techdocs == 'true' || steps.changes.outputs.devtools == 'true' }}
       run-helmchart-ci: ${{ steps.changes.outputs.helmchart == 'true' }}
+      run-terraform-ci: ${{ steps.changes.outputs.terraform == 'true' || steps.changes.outputs.devtools == 'true' }}
+      terraform-validation-only: ${{ steps.changes.outputs.terraform == 'false' && steps.changes.outputs.devtools == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - id: xdg_cache_hash
@@ -25,6 +27,13 @@ jobs:
             helmchart:
               - 'charts/coop-app-chart/**'
               - 'examples/**'
+            terraform:
+              - 'infrastructure/terraform/**'
+              - 'infrastructure/terraform-shared/**'
+            devtools:
+              - 'docker-compose/**'
+              - '.github/workflows/**'
+              - 'docker-compose.yaml'
       - name: Debug ...
         run: |
           echo "::${{ steps.changes.outputs }}"
@@ -91,7 +100,23 @@ jobs:
           helm template .
         working-directory: examples/multiple
 
-  
+## terraform-ci cannot be used because coopnorge/github-workflow-terraform-validation is internal
+#  terraform-ci:
+#    needs: setup
+#    if: ${{ needs.setup.outputs.run-terraform-ci == 'true' }}
+#    concurrency:
+#      group: ${{ github.repository }}-${{ github.workflow }}-terraform-ci-${{ github.ref }}
+#      cancel-in-progress: true
+#    uses: coopnorge/github-workflow-terraform-validation/.github/workflows/terraform-validation.yaml@v3.2.0
+#    with:
+#      use-github-for-plan: true
+#      dependabot-automerge-enabled: true
+#      dependabot-automerge-preview: false
+#      docker-compose-service: terraform-devtools
+#      validation-only: ${{ needs.setup.outputs.terraform-validation-only == 'true' }}
+#    secrets:
+#      reviewbot-github-token: ${{ secrets.REVIEWBOT_GITHUB_TOKEN }}
+#      spacelift-read-token: ${{ secrets.SPACELIFT_READ_TOKEN }}
 
   build:
     needs:
@@ -104,5 +129,4 @@ jobs:
         name: "Catch errors"
         if: |
           needs.techdocs.result == 'failure' || 
-          needs.helmchart.result == 'failure' 
- 
+          needs.helmchart.result == 'failure'
