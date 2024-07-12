@@ -9,7 +9,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-df5dd28927e8376d245b/coop-app-chart-0.10.1-alpha.92.290.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-148f8e4cfbe59742ff5c/coop-app-chart-0.10.1-alpha.92.290.tgz
     version: 0.10.1-alpha.92.290
   - apiVersion: v2
     appVersion: 1.16.0
@@ -19,7 +19,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-df5dd28927e8376d245b/coop-app-chart-0.10.1-alpha.91.288.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-148f8e4cfbe59742ff5c/coop-app-chart-0.10.1-alpha.91.288.tgz
     version: 0.10.1-alpha.91.288
   - apiVersion: v2
     appVersion: 1.16.0
@@ -29,7 +29,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-df5dd28927e8376d245b/coop-app-chart-0.10.1-alpha.91.287.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-148f8e4cfbe59742ff5c/coop-app-chart-0.10.1-alpha.91.287.tgz
     version: 0.10.1-alpha.91.287
   - apiVersion: v2
     appVersion: 1.16.0
@@ -39,7 +39,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-df5dd28927e8376d245b/coop-app-chart-0.10.1-alpha.90.292.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-148f8e4cfbe59742ff5c/coop-app-chart-0.10.1-alpha.90.292.tgz
     version: 0.10.1-alpha.90.292
   - apiVersion: v2
     appVersion: 1.16.0
@@ -49,7 +49,7 @@ entries:
     name: coop-app-chart
     type: application
     urls:
-    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-df5dd28927e8376d245b/coop-app-chart-0.10.1-alpha.90.286.tgz
+    - https://github.com/coopnorge/helm-base-chart/releases/download/untagged-148f8e4cfbe59742ff5c/coop-app-chart-0.10.1-alpha.90.286.tgz
     version: 0.10.1-alpha.90.286
   - apiVersion: v2
     appVersion: 1.16.0
