@@ -21,10 +21,12 @@ jobs:
   publish-release:
     permissions:
       contents: write
+      id-token: write
     needs: prepare-release
     uses: ./.github/workflows/release-chart-workflow.yaml
     with:
       repository: ${{ github.repository }}
+      oci-repository: europe-docker.pkg.dev/helmbasecharts-shared-5ebb/coop-helm-charts
       release-tag: ${{ needs.prepare-release.outputs.release-tag }}
       release-version: ${{ needs.prepare-release.outputs.release-version }}
       chart-path: charts/coop-app-chart
