@@ -1,0 +1,14 @@
+{
+  "name": "update-helm-registry-to-oci",
+  "module": "update-helm-registry-to-oci.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "yaml": "^2.4.5"
+  }
+}
