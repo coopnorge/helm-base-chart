@@ -30,7 +30,7 @@ Now edit `Chart.yaml` and add
 ```yaml
 dependencies:
   - name: coop-app-chart
-    version: 0.5.0
+    version: 0.10.0
     repository: "oci://europe-docker.pkg.dev/helmbasecharts-shared-5ebb/coop-helm-charts"
     alias: app
 ```
@@ -48,7 +48,8 @@ app: # app key related to the alias defined in the dependencies.
   name: helloworld
 
   image:
-    repository: path-to-repo/helloworld
+    registry: europe-docker.pkg.dev/registry
+    repository: helloworld/helloworld
     tag: v1.2.9999
   port: 3000
 
@@ -63,8 +64,8 @@ app: # app key related to the alias defined in the dependencies.
       mountAsEnvironment: true
 
   resources:
-    memory: 128M
-    cpu: 2
+    memory: 32Mi
+    cpu: 200m
 
   connectivity:
     gRPC:
@@ -93,7 +94,8 @@ Then create another file called `values-production.yaml`
 ```yaml title="values-production.yaml"
 app:
   environment: production
-  image: path-to-repo/helloworld:<my-prd-tag>
+  image:
+    tag: <my-prd-tag>
 ```
 
 More examples can be found [helm-base-chart repo][helm-base-chart]. The full
