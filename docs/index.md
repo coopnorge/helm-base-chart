@@ -31,7 +31,7 @@ Now edit `Chart.yaml` and add
 dependencies:
   - name: coop-app-chart
     version: 0.5.0
-    repository: "https://coopnorge.github.io/helm-base-chart"
+    repository: "oci://europe-docker.pkg.dev/helmbasecharts-shared-5ebb/coop-helm-charts"
     alias: app
 ```
 

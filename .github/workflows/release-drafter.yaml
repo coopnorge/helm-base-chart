@@ -41,10 +41,12 @@ jobs:
   release-alpha-version:
     permissions:
       contents: write
+      id-token: write
     uses: ./.github/workflows/release-chart-workflow.yaml
     needs: process-release-drafter-output
     with:
       repository: ${{ github.repository }}
+      oci-repository: europe-docker.pkg.dev/helmbasecharts-shared-5ebb/coop-helm-charts
       release-tag: ${{ needs.process-release-drafter-output.outputs.tag-name }}
       release-version: ${{ needs.process-release-drafter-output.outputs.version }}
       chart-path: charts/coop-app-chart
@@ -65,10 +67,8 @@ jobs:
           message: |
             ### 🚀 Alpha Version Published
             
-            **Tag:** [${{ needs.process-release-drafter-output.outputs.tag-name }}](${{ needs.release-alpha-version.outputs.html-url }})
-            
             **Chart version:** `${{ needs.process-release-drafter-output.outputs.version }}`
             
-            **Chart filename:** [${{ needs.release-alpha-version.outputs.chart-filename }}](${{ needs.release-alpha-version.outputs.download-url }})
+            **Chart url:** `${{ needs.release-alpha-version.outputs.download-url }}`
 
             **Commit ID:** `${{ github.event.pull_request.head.sha }}`

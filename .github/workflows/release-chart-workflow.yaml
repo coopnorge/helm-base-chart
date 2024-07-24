@@ -10,6 +10,11 @@ on:
           Repository that contains the chart to be released. This is the 
           repository that is checked out and used to generate the chart and 
           index.
+      oci-repository:
+        required: true
+        type: string
+        description: >-
+          OCI repository to publish the helm chart to.
       release-tag:
         required: true
         type: string
@@ -57,11 +62,14 @@ on:
 
 jobs:
   publish-chart-release:
+    permissions:
+      id-token: write
+      contents: write
     runs-on: ubuntu-latest
     outputs:
       chart-filename: ${{ steps.get-chart-filename.outputs.chart-filename }}
       html-url: ${{ steps.upload-chart.outputs.html_url }}
-      download-url: ${{ steps.get-asset-base-url.outputs.asset-base-url }}/${{ steps.get-chart-filename.outputs.chart-filename }}
+      download-url: oci://${{ inputs.oci-repository }}/coop-app-chart:${{ inputs.release-version }}
     steps:
       - name: Checkout the release
         uses: actions/checkout@v4
@@ -95,59 +103,34 @@ jobs:
           CHART_FILENAME=$(basename $CHART_PATH)-${{ inputs.release-version }}.tgz
           echo "chart-filename=$CHART_FILENAME" >> "$GITHUB_OUTPUT"
 
-      - name: Upload chart as release artifact
-        if: ${{ !inputs.skip-upload }}
-        uses: ncipollo/release-action@v1.14.0
-        id: upload-chart
+      - uses: google-github-actions/auth@v2
         with:
-          tag: ${{ inputs.release-tag }}
-          artifacts: ${{ steps.get-chart-filename.outputs.chart-filename }}
-          allowUpdates: true
-          omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
-          omitDraftDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
+          project_id: helmbasecharts-shared-5ebb
+          workload_identity_provider: projects/345583511543/locations/global/workloadIdentityPools/github-actions/providers/github-actions-provider
+          service_account: gh-ap-helm-base-chart-infras@helmbasecharts-shared-5ebb.iam.gserviceaccount.com
 
-      - name: Get asset base URL
-        id: get-asset-base-url
-        env:
-          GH_TOKEN: ${{ secrets.github-token }}
+      - name: Login to Artifact Registry with Helm
+        if: ${{ !inputs.skip-upload }}
         run: |
-          ASSET_URL=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[0].url')
-          echo "asset-base-url="${ASSET_URL%/*}"" >> "$GITHUB_OUTPUT"
+          gcloud auth configure-docker ${{ inputs.oci-repository }} --quiet
+          gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken --password-stdin ${{ inputs.oci-repository }}
+
+      - name: Upload chart to artifact registry
+        if: ${{ !inputs.skip-upload }}
+        run: |
+          helm push "${{ steps.get-chart-filename.outputs.chart-filename }}" "oci://${{ inputs.oci-repository }}"
 
       - name: Update helm chart index for current release
         if: ${{ !inputs.skip-upload }}
         run: |
           # Generate URL for the current release
-          helm repo index --url ${{ steps.get-asset-base-url.outputs.asset-base-url }}/ --merge gh-pages/index.yaml .
+          helm repo index --url "oci://${{ inputs.oci-repository }}" --merge gh-pages/index.yaml .
           mv index.yaml gh-pages/index.yaml
 
-      - name: Fix helm chart index links for previous releases
-        env:
-          GH_TOKEN: ${{ secrets.github-token }}
+      - name: Update URL to OCI url
+        if: ${{ !inputs.skip-upload }}
         run: |
-          escape_special_chars() {
-            echo "$1" | sed -e 's/[]\/$*.^[]/\\&/g'
-          }
-
-          # Fix URLs for previous assets in the release
-          RELEASE_ASSETS=$(cd main-repo && gh release view ${{ inputs.release-tag }} --json assets | jq -r '.assets[]')
-          mapfile -t RELEASE_ASSET_NAMES < <(echo "$RELEASE_ASSETS" | jq -r '.name')
-          mapfile -t RELEASE_ASSET_URLS < <(echo "$RELEASE_ASSETS" | jq -r '.url')
-
-          echo "Number of names: ${#RELEASE_ASSET_NAMES[@]}"
-          echo "Number of URLs: ${#RELEASE_ASSET_URLS[@]}"
-
-          # search index.yaml for all instances of "-.*RELEASE_ASSET_NAME" (which is the URL) and replace with "- RELEASE_ASSET_URL"
-          if [[ ${#RELEASE_ASSET_NAMES[@]} -gt 0 ]]; then
-            for i in "${!RELEASE_ASSET_NAMES[@]}"; do
-              RELEASE_ASSET_NAME=$(escape_special_chars "${RELEASE_ASSET_NAMES[$i]}")
-              RELEASE_ASSET_URL=$(escape_special_chars "${RELEASE_ASSET_URLS[$i]}")
-              echo "Replacing $RELEASE_ASSET_NAME with $RELEASE_ASSET_URL"
-              sed -i "s/-.*$RELEASE_ASSET_NAME/- $RELEASE_ASSET_URL/g" gh-pages/index.yaml
-            done
-          fi
+          yq eval --inplace '.entries.coop-app-chart[] |= (select(.version == "${{ inputs.release-version }}") | .urls[0] = "oci://${{ inputs.oci-repository }}/coop-app-chart:${{ inputs.release-version }}")' gh-pages/index.yaml
 
       - name: Configure git
         working-directory: gh-pages
