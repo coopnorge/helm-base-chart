@@ -48,7 +48,7 @@ app: # app key related to the alias defined in the dependencies.
   name: helloworld
 
   image:
-    registry: europe-docker.pkg.dev/registry
+    registry: europe-docker.pkg.dev/registry-name
     repository: helloworld/helloworld
     tag: v1.2.9999
   port: 3000
