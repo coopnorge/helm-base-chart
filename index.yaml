@@ -3,6 +3,16 @@ entries:
   coop-app-chart:
     - apiVersion: v2
       appVersion: 1.16.0
+      created: "2024-07-24T09:34:13.182208274Z"
+      description: A Helm chart for Kubernetes
+      digest: 0719fcde67da045f65d3cb5a0e842e31aaa6fc116e3cb774d9314c4896c91a66
+      name: coop-app-chart
+      type: application
+      urls:
+        - oci://europe-docker.pkg.dev/helmbasecharts-shared-5ebb/coop-helm-charts/coop-app-chart:0.11.0
+      version: 0.11.0
+    - apiVersion: v2
+      appVersion: 1.16.0
       created: "2024-07-24T09:20:42.845620455Z"
       description: A Helm chart for Kubernetes
       digest: 84b42646bb93427511fe048be65854197adebdb34c77c33102b4b43c9533e846
@@ -1121,4 +1131,4 @@ entries:
       urls:
         - oci://europe-docker.pkg.dev/helmbasecharts-shared-5ebb/coop-helm-charts/coop-app-chart:0.1.0
       version: 0.1.0
-generated: "2024-07-24T09:20:42.844926872Z"
+generated: "2024-07-24T09:34:13.181363898Z"
